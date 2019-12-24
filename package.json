@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -14,5 +15,12 @@
   "bugs": {
     "url": "https://github.com/tsybenko/modal.js/issues"
   },
-  "homepage": "https://github.com/tsybenko/modal.js#readme"
+  "homepage": "https://github.com/tsybenko/modal.js#readme",
+  "devDependencies": {
+    "@babel/core": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
+    "babel-loader": "^8.0.6",
+    "webpack": "^4.41.4",
+    "webpack-cli": "^3.3.10"
+  }
 }

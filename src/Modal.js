@@ -1,4 +1,4 @@
-var Modal = (function(el, triggers = [], options = {}) {
+export default (function(el, triggers = [], options = {}) {
 
 	this.initedHook = function(cb) {cb()};
 	// this.triggerAddedHook = function(cb) {cb()};
