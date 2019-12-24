@@ -1,6 +1,6 @@
 # Modal.js
 
-##Usage example
+## Usage example
 
 **HTML**
 ```html
