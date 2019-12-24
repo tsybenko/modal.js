@@ -4,17 +4,17 @@ export default (function(el, triggers = [], options = {}) {
 	// this.triggerAddedHook = function(cb) {cb()};
 
 	this.events = {
-		beforeOpen: function() {
-			return new CustomEvent('beforeOpen');
+		beforeOpen: function(data) {
+			return new CustomEvent('beforeOpen', {detail: data});
 		},
-		opened: function() {
-			return new CustomEvent('opened');
+		opened: function(data) {
+			return new CustomEvent('opened', {detail: data});
 		},
-		beforeClose: function() {
-			return new CustomEvent('beforeClose');
+		beforeClose: function(data) {
+			return new CustomEvent('beforeClose', {detail: data});
 		},
-		closed: function() {
-			return new CustomEvent('closed');
+		closed: function(data) {
+			return new CustomEvent('closed', {detail: data});
 		},
 		// toggle: function() {}
 	};
@@ -22,12 +22,9 @@ export default (function(el, triggers = [], options = {}) {
 	this.el = el;
 
 	this.options = options;
+	let rootEl = this.options.rootEl || document;
 
-	if (!this.options.rootEl) {
-		this.options.rootEl = document;
-	}
-
-	this.options.rootEl.addEventListener('keyup', (function(e) {
+	rootEl.addEventListener('keyup', (function(e) {
 		if (e.keyCode === 27) {
 			if (this.isShow()) {
 				this.toggleModal();
@@ -39,18 +36,16 @@ export default (function(el, triggers = [], options = {}) {
 
 	/** Show modal window */
 	this.showModal = function() {
-		let root = this.options.rootEl;
-		root.dispatchEvent(this.events.beforeOpen());
+		rootEl.dispatchEvent(this.events.beforeOpen());
 		this.el.style.display = 'flex';
-		root.dispatchEvent(this.events.opened());
+		rootEl.dispatchEvent(this.events.opened());
 	};
 
 	/** Hide modal window */
 	this.hideModal = function() {
-		let root = this.options.rootEl;
-		root.dispatchEvent(this.events.beforeClose());
+		rootEl.dispatchEvent(this.events.beforeClose());
 		this.el.style.display = 'none';
-		root.dispatchEvent(this.events.closed());
+		rootEl.dispatchEvent(this.events.closed());
 
 		this.isHidden = function() {
 			return this.el.style.display == 'none';
@@ -99,7 +94,7 @@ export default (function(el, triggers = [], options = {}) {
 	 * @param cb
 	 */
 	this.beforeOpen = function(cb) {
-		this.options.rootEl.addEventListener('beforeOpen', function(e) {cb(e)});
+		rootEl.addEventListener('beforeOpen', function(e) {cb(e)});
 	};
 
 	/**
@@ -108,7 +103,7 @@ export default (function(el, triggers = [], options = {}) {
 	 * @param cb
 	 */
 	this.opened = function(cb) {
-		this.options.rootEl.addEventListener('opened', function(e) {cb(e)});
+		rootEl.addEventListener('opened', function(e) {cb(e)});
 	};
 
 	/**
@@ -117,7 +112,7 @@ export default (function(el, triggers = [], options = {}) {
 	 * @param cb
 	 */
 	this.beforeClose = function(cb) {
-		this.options.rootEl.addEventListener('beforeClose', function(e) {cb(e)});
+		rootEl.addEventListener('beforeClose', function(e) {cb(e)});
 	};
 
 	/**
@@ -126,7 +121,7 @@ export default (function(el, triggers = [], options = {}) {
 	 * @param cb
 	 */
 	this.closed = function(cb) {
-		this.options.rootEl.addEventListener('closed', function(e) {cb(e)});
+		rootEl.addEventListener('closed', function(e) {cb(e)});
 	};
 
 })(window);
