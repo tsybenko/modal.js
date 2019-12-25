@@ -7,19 +7,13 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 	 * Predefined events of the module
 	 */
 	this.events = {
-		beforeOpen: function(data) {
-			return new CustomEvent('beforeOpen', {detail: data, cancelable: true});
-		},
-		opened: function(data) {
-			return new CustomEvent('opened', {detail: data});
-		},
-		beforeClose: function(data) {
-			return new CustomEvent('beforeClose', {detail: data, cancelable: true});
-		},
-		closed: function(data) {
-			return new CustomEvent('closed', {detail: data});
-		},
-		// toggle: function() {}
+		beforeOpen: data => new CustomEvent('beforeOpen', { detail: data }),
+		onOpen: data => new CustomEvent('onOpen', { detail: data, cancelable: true }),
+		opened: data => new CustomEvent('opened', { detail: data }),
+		beforeClose: data => new CustomEvent('beforeClose', { detail: data }),
+		onClose: data => new CustomEvent('onClose', { detail: data, cancelable: true }),
+		closed: data => new CustomEvent('closed', { detail: data }),
+		onToggle: data => new CustomEvent('onToggle', { detail: data }),
 	};
 
 	/**
