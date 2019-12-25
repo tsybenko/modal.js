@@ -1,4 +1,4 @@
-module.exports = (window => function(el, triggers = [], options = {}) {
+module.exports = (document => function(el, triggers = [], options = {}) {
 
 	this.initedHook = function(cb) {cb()};
 	// this.triggerAddedHook = function(cb) {cb()};
@@ -124,4 +124,4 @@ module.exports = (window => function(el, triggers = [], options = {}) {
 		rootEl.addEventListener('closed', function(e) {cb(e)});
 	};
 
-})(window);
+})(document);
