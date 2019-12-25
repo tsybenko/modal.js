@@ -80,7 +80,9 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 	 * Show modal window
 	 */
 	this.showModal = function(e) {
-		if (rootEl.dispatchEvent(this.events.beforeOpen(e))) {
+		rootEl.dispatchEvent(this.events.beforeOpen(e))
+
+		if (rootEl.dispatchEvent(this.events.onOpen(e))) {
 			this.el.style.visibility = 'visible';
 
 			if (! this.el.classList.contains('opened')) {
@@ -95,7 +97,9 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 	 * Hide modal window
 	 */
 	this.hideModal = function(e) {
-		if (rootEl.dispatchEvent(this.events.beforeClose(e))) {
+		rootEl.dispatchEvent(this.events.beforeClose(e))
+
+		if (rootEl.dispatchEvent(this.events.onClose(e))) {
 			this.el.style.visibility = 'hidden';
 
 			if (this.el.classList.contains('opened')) {
@@ -151,39 +155,51 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 	this.addTrigger(this.el.querySelector('.btn-close'), 'click');
 
 	/**
-	 * Will call handler "cb" before modal window will be opened
+	 * Will call handler "handler" before modal window will be opened
 	 *
-	 * @param cb {Function}
+	 * @param handler {Function}
 	 */
-	this.beforeOpen = function(cb) {
-		rootEl.addEventListener('beforeOpen', function(e) {cb(e)});
-	};
+	this.beforeOpen = handler =>
+		rootEl.addEventListener('beforeOpen', event => handler(event));
 
 	/**
-	 * Will call handler "cb" after modal window was opened
+	 * Will call handler "handler" right in moment before modal window will be opened
 	 *
-	 * @param cb {Function}
+	 * @param handler {Function}
 	 */
-	this.opened = function(cb) {
-		rootEl.addEventListener('opened', function(e) {cb(e)});
-	};
+	this.onOpen = handler =>
+		rootEl.addEventListener('onOpen', event => handler(event));
 
 	/**
-	 * Will call handler "cb" calls before modal window will be closed
+	 * Will call handler "handler" after modal window was opened
 	 *
-	 * @param cb {Function}
+	 * @param handler {Function}
 	 */
-	this.beforeClose = function(cb) {
-		rootEl.addEventListener('beforeClose', function(e) {cb(e)});
-	};
+	this.opened = handler =>
+		rootEl.addEventListener('opened', event => handler(event));
 
 	/**
-	 * Will call handler "cb" after modal window was closed
+	 * Will call handler "handler" right in moment before modal window was closed
 	 *
-	 * @param cb {Function}
+	 * @param handler {Function}
 	 */
-	this.closed = function(cb) {
-		rootEl.addEventListener('closed', function(e) {cb(e)});
-	};
+	this.onClose = handler =>
+		rootEl.addEventListener('onClose', event => handler(event));
+
+	/**
+	 * Will call handler "handler" calls before modal window will be closed
+	 *
+	 * @param handler {Function}
+	 */
+	this.beforeClose = handler =>
+		rootEl.addEventListener('beforeClose', event => handler(event));
+
+	/**
+	 * Will call handler "handler" after modal window was closed
+	 *
+	 * @param handler {Function}
+	 */
+	this.closed = handler =>
+		rootEl.addEventListener('closed', event => handler(event));
 
 })(document);
