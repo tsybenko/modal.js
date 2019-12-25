@@ -3,7 +3,7 @@ const MODE_PROD = 'production';
 const MODE_DEV = 'development';
 
 module.exports = (env) => {
-	let mode = env.production === true
+	let mode = env.production === 'true'
 		? MODE_PROD
 		: MODE_DEV;
 

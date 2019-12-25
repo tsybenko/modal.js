@@ -154,6 +154,10 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 	/** Default trigger */
 	this.addTrigger(this.el.querySelector('.btn-close'), 'click');
 
+	// for (let [key] of Object.entries(this.events)) {
+	// 	this[`${key}`] = handler => rootEl.addEventListener('key', event => handler(event));
+	// }
+
 	/**
 	 * Will call handler "handler" before modal window will be opened
 	 *
