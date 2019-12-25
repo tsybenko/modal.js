@@ -24,36 +24,75 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 	this.options = options;
 	let rootEl = this.options.rootEl || document;
 
-	rootEl.addEventListener('keyup', (function(e) {
-		if (e.keyCode === 27) {
+	/**
+	 * Handler of "Escape" keyboard button
+	 * @param e {KeyboardEvent}
+	 */
+	let escHandler = function(e) {
+		if (e.key === "Escape") {
 			if (this.isShow()) {
 				this.toggleModal();
 			}
 		}
-	}).bind(this));
+	};
 
+	/**
+	 * Listener of "Escape" keyboard button
+	 */
+	rootEl.addEventListener('keyup', e => escHandler.call(this, e));
+
+	/**
+	 * Triggers
+	 *
+	 * @type {Array}
+	 */
 	this.triggers = [];
 
-	/** Show modal window */
+	/**
+	 * Check is modal hidden
+	 *
+	 * @returns {boolean}
+	 */
+	this.isHidden = function() {
+		return this.el.style.visibility === 'hidden';
+	};
+
+	/**
+	 * Check is modal shows
+	 * Based on "isHidden" method, returns reversed result of "isHidden"
+	 *
+	 * @returns {boolean}
+	 */
+	this.isShow = function() {
+		return !this.isHidden();
+	};
+
+	/**
+	 * Show modal window
+	 */
 	this.showModal = function() {
 		rootEl.dispatchEvent(this.events.beforeOpen());
-		this.el.style.display = 'flex';
+		this.el.style.visibility = 'visible';
+
+		if (! this.el.classList.contains('opened')) {
+			this.el.classList.add('opened');
+		}
+
 		rootEl.dispatchEvent(this.events.opened());
 	};
 
-	/** Hide modal window */
+	/**
+	 * Hide modal window
+	 */
 	this.hideModal = function() {
 		rootEl.dispatchEvent(this.events.beforeClose());
-		this.el.style.display = 'none';
-		rootEl.dispatchEvent(this.events.closed());
+		this.el.style.visibility = 'hidden';
 
-		this.isHidden = function() {
-			return this.el.style.display == 'none';
-		};
-
-		this.isShow = function() {
-			return !this.isHidden();
+		if (this.el.classList.contains('opened')) {
+			this.el.classList.remove('opened');
 		}
+
+		rootEl.dispatchEvent(this.events.closed());
 	};
 
 	/** Toggle modal window */
