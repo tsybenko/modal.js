@@ -32,10 +32,6 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 	 */
 	this.options = options;
 
-	if (! 'logAll' in this.options) {
-		this.options.logAll = true;
-	}
-
 	/**
 	 * Root element (HTML)
 	 *
