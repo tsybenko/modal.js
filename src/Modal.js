@@ -3,6 +3,9 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 	this.initedHook = function(cb) {cb()};
 	// this.triggerAddedHook = function(cb) {cb()};
 
+	/**
+	 * Predefined events of the module
+	 */
 	this.events = {
 		beforeOpen: function(data) {
 			return new CustomEvent('beforeOpen', {detail: data});
@@ -19,9 +22,21 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 		// toggle: function() {}
 	};
 
+	/**
+	 * Container
+	 */
 	this.el = el;
 
+	/**
+	 * Options of instance of the module
+	 */
 	this.options = options;
+
+	/**
+	 * Root element (HTML)
+	 *
+	 * @type {*|Document}
+	 */
 	let rootEl = this.options.rootEl || document;
 
 	/**
@@ -95,7 +110,9 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 		rootEl.dispatchEvent(this.events.closed());
 	};
 
-	/** Toggle modal window */
+	/**
+	 * Toggle modal window
+	 */
 	this.toggleModal = function() {
 		console.log('toggleModal');
 		if (this.isHidden()) {
@@ -105,15 +122,28 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 		}
 	};
 
+	/**
+	 * Hides modal when instance was initialised
+	 */
 	this.initedHook((function() {
 		this.hideModal();
 	}).bind(this));
 
 
+	/**
+	 * Handler that will be assigned to a trigger
+	 */
 	this.handleTrigger = (function(e) {
 		this.toggleModal();
 	}).bind(this);
 
+	/**
+	 * Sets HTMLDOMElement "el" with event type of eventName as a trigger of toggle method
+	 *
+	 * @param el {HTMLElement}
+	 * @param eventName {String}
+	 * @returns {boolean}
+	 */
 	this.addTrigger = function(el, eventName) {
 		if (! this.triggers.includes(el)) {
 			this.triggers.push(el);
@@ -130,7 +160,7 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 	/**
 	 * Will call handler "cb" before modal window will be opened
 	 *
-	 * @param cb
+	 * @param cb {Function}
 	 */
 	this.beforeOpen = function(cb) {
 		rootEl.addEventListener('beforeOpen', function(e) {cb(e)});
@@ -139,7 +169,7 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 	/**
 	 * Will call handler "cb" after modal window was opened
 	 *
-	 * @param cb
+	 * @param cb {Function}
 	 */
 	this.opened = function(cb) {
 		rootEl.addEventListener('opened', function(e) {cb(e)});
@@ -148,7 +178,7 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 	/**
 	 * Will call handler "cb" calls before modal window will be closed
 	 *
-	 * @param cb
+	 * @param cb {Function}
 	 */
 	this.beforeClose = function(cb) {
 		rootEl.addEventListener('beforeClose', function(e) {cb(e)});
@@ -157,7 +187,7 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 	/**
 	 * Will call handler "cb" after modal window was closed
 	 *
-	 * @param cb
+	 * @param cb {Function}
 	 */
 	this.closed = function(cb) {
 		rootEl.addEventListener('closed', function(e) {cb(e)});
