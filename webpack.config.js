@@ -5,6 +5,7 @@ module.exports = {
 	output: {
 		filename: 'bundle.js',
 		path: path.resolve(__dirname, 'dist'),
+		library: "Modal"
 	},
 	mode: "development",
 	module: {
@@ -14,6 +15,6 @@ module.exports = {
 				exclude: /node_modules/,
 				loader: "babel-loader"
 			}
-		]
+		],
 	}
 };
