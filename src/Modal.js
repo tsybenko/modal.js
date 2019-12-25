@@ -8,13 +8,13 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 	 */
 	this.events = {
 		beforeOpen: function(data) {
-			return new CustomEvent('beforeOpen', {detail: data});
+			return new CustomEvent('beforeOpen', {detail: data, cancelable: true});
 		},
 		opened: function(data) {
 			return new CustomEvent('opened', {detail: data});
 		},
 		beforeClose: function(data) {
-			return new CustomEvent('beforeClose', {detail: data});
+			return new CustomEvent('beforeClose', {detail: data, cancelable: true});
 		},
 		closed: function(data) {
 			return new CustomEvent('closed', {detail: data});
@@ -31,6 +31,10 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 	 * Options of instance of the module
 	 */
 	this.options = options;
+
+	if (! 'logAll' in this.options) {
+		this.options.logAll = true;
+	}
 
 	/**
 	 * Root element (HTML)
@@ -85,41 +89,40 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 	/**
 	 * Show modal window
 	 */
-	this.showModal = function() {
-		rootEl.dispatchEvent(this.events.beforeOpen());
-		this.el.style.visibility = 'visible';
+	this.showModal = function(e) {
+		if (rootEl.dispatchEvent(this.events.beforeOpen(e))) {
+			this.el.style.visibility = 'visible';
 
-		if (! this.el.classList.contains('opened')) {
-			this.el.classList.add('opened');
+			if (! this.el.classList.contains('opened')) {
+				this.el.classList.add('opened');
+			}
+
+			rootEl.dispatchEvent(this.events.opened(e));
 		}
-
-		rootEl.dispatchEvent(this.events.opened());
 	};
 
 	/**
 	 * Hide modal window
 	 */
-	this.hideModal = function() {
-		rootEl.dispatchEvent(this.events.beforeClose());
-		this.el.style.visibility = 'hidden';
+	this.hideModal = function(e) {
+		if (rootEl.dispatchEvent(this.events.beforeClose(e))) {
+			this.el.style.visibility = 'hidden';
 
-		if (this.el.classList.contains('opened')) {
-			this.el.classList.remove('opened');
+			if (this.el.classList.contains('opened')) {
+				this.el.classList.remove('opened');
+			}
+
+			rootEl.dispatchEvent(this.events.closed(e));
 		}
-
-		rootEl.dispatchEvent(this.events.closed());
 	};
 
 	/**
 	 * Toggle modal window
 	 */
-	this.toggleModal = function() {
-		console.log('toggleModal');
-		if (this.isHidden()) {
-			this.showModal();
-		} else {
-			this.hideModal();
-		}
+	this.toggleModal = function(e) {
+		this.isHidden() === true
+			? this.showModal(e)
+			: this.hideModal(e);
 	};
 
 	/**
@@ -134,7 +137,7 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 	 * Handler that will be assigned to a trigger
 	 */
 	this.handleTrigger = (function(e) {
-		this.toggleModal();
+		this.toggleModal(e);
 	}).bind(this);
 
 	/**
