@@ -1,4 +1,6 @@
-export default (window => function(el, triggers = [], options = {}) {
+let Extension = require('./extension');
+
+module.exports = ((window, Extension) => function(el, triggers = [], options = {}) {
 
 	this.initedHook = function(cb) {cb()};
 	// this.triggerAddedHook = function(cb) {cb()};
@@ -33,6 +35,8 @@ export default (window => function(el, triggers = [], options = {}) {
 	}).bind(this));
 
 	this.triggers = [];
+
+	this.extensions = [];
 
 	/** Show modal window */
 	this.showModal = function() {
@@ -124,4 +128,10 @@ export default (window => function(el, triggers = [], options = {}) {
 		rootEl.addEventListener('closed', function(e) {cb(e)});
 	};
 
-})(window);
+	this.extend = function (name, handler) {
+		let ext = new Extension(name, handler);
+		this.extensions.push(ext);
+		ext.run();
+	}
+
+})(window, Extension);
