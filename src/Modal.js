@@ -84,13 +84,15 @@ module.exports = (document => function(el, options = {}) {
 	 * Hide modal window
 	 */
 	this.hideModal = function(e) {
-		el.dispatchEvent(events.beforeClose(e))
+		el.dispatchEvent(events.beforeClose(e));
 
 		if (el.dispatchEvent(events.onClose(e))) {
 			el.style.visibility = 'hidden';
 
 			if (el.classList.contains('opened')) {
 				el.classList.remove('opened');
+				el.removeAttribute('aria-modal');
+				el.setAttribute('aria-hidden', 'true');
 			}
 
 			el.dispatchEvent(events.closed(e));
