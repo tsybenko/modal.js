@@ -1,30 +1,20 @@
 const aria = require('./plugins/aria');
 
+const submodules = {
+	plugin: require('./plugins')
+};
+
 module.exports = (document => function(el, options = {}) {
 
 	this.initedHook = function(cb) {cb()};
 
 	let plugins = {};
 
-	this.plug = function(plugin) {
-		if (! plugins.hasOwnProperty(plugin.name)) {
-			plugins = {...plugins, plugin};
-
-			return true;
-		}
-
-		return false;
-	};
+	this.plug = submodules.plugin.registerPlugin(plugins);
 
 	this.plug(aria);
 
-	const mapPluginsMethod = function (methodName, options) {
-		for (let plugin in plugins) {
-			if (plugins[plugin].methods.hasOwnProperty(methodName)) {
-				plugins[plugin].methods[methodName](options.event, options.element);
-			}
-		}
-	};
+	const mapPluginsMethod = submodules.plugin.mapPluginsMethod(plugins);
 
 	/**
 	 * Predefined events of the module
