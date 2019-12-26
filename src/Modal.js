@@ -27,18 +27,13 @@ module.exports = (document => function(el, options = {}) {
 	};
 
 	/**
-	 * Predefined events of the module
+	 * Hooks
+	 *
+	 * @type {{onClose: (function(*): *), inited: (function(*): *), onOpen: (function(*): *), beforeClose: (function(*): *), closed: (function(*): *), opened: (function(*): *), beforeOpen: (function(*): *)}}
 	 */
-	const events = {
-		inited: data => new CustomEvent('inited', { detail: data }),
-		beforeOpen: data => new CustomEvent('beforeOpen', { detail: data }),
-		onOpen: data => new CustomEvent('onOpen', { detail: data, cancelable: true }),
-		opened: data => new CustomEvent('opened', { detail: data }),
-		beforeClose: data => new CustomEvent('beforeClose', { detail: data }),
-		onClose: data => new CustomEvent('onClose', { detail: data, cancelable: true }),
-		closed: data => new CustomEvent('closed', { detail: data }),
-		onToggle: data => new CustomEvent('onToggle', { detail: data }),
-	};
+	const hooks = require('./hooks')(el);
+
+	const events = require('./events');
 
 	el.dispatchEvent(events.inited());
 
@@ -180,16 +175,11 @@ module.exports = (document => function(el, options = {}) {
 	// 	this[`${key}`] = handler => el.addEventListener('key', event => handler(event));
 	// }
 
-	const hooks = {
-		inited: handler => el.addEventListener('inited', event => handler(event)),
-		beforeOpen: handler => el.addEventListener('beforeOpen', event => handler(event)),
-		onOpen: handler => el.addEventListener('onOpen', event => handler(event)),
-		opened: handler => el.addEventListener('opened', event => handler(event)),
-		beforeClose: handler => el.addEventListener('beforeClose', event => handler(event)),
-		onClose: handler => el.addEventListener('onClose', event => handler(event)),
-		closed: handler => el.addEventListener('closed', event => handler(event))
-	};
-
+	/**
+	 * Will call handler "handler" after the module instantiation
+	 *
+	 * @param handler {Function}
+	 */
 	this.inited = hooks.inited;
 
 	/**
