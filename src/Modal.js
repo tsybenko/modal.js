@@ -171,50 +171,48 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 		closed: handler => rootEl.addEventListener('closed', event => handler(event))
 	};
 
-	this.hooks = hooks;
-
-	this.inited = this.hooks.inited;
+	this.inited = hooks.inited;
 
 	/**
 	 * Will call handler "handler" before modal window will be opened
 	 *
 	 * @param handler {Function}
 	 */
-	this.beforeOpen = this.hooks.beforeOpen;
+	this.beforeOpen = hooks.beforeOpen;
 
 	/**
 	 * Will call handler "handler" right in moment before modal window will be opened
 	 *
 	 * @param handler {Function}
 	 */
-	this.onOpen = this.hooks.onOpen;
+	this.onOpen = hooks.onOpen;
 
 	/**
 	 * Will call handler "handler" after modal window was opened
 	 *
 	 * @param handler {Function}
 	 */
-	this.opened = this.hooks.opened;
+	this.opened = hooks.opened;
 
 	/**
 	 * Will call handler "handler" right in moment before modal window was closed
 	 *
 	 * @param handler {Function}
 	 */
-	this.onClose = this.hooks.onClose;
+	this.onClose = hooks.onClose;
 
 	/**
 	 * Will call handler "handler" calls before modal window will be closed
 	 *
 	 * @param handler {Function}
 	 */
-	this.beforeClose = this.hooks.beforeClose;
+	this.beforeClose = hooks.beforeClose;
 
 	/**
 	 * Will call handler "handler" after modal window was closed
 	 *
 	 * @param handler {Function}
 	 */
-	this.closed = this.hooks.closed;
+	this.closed = hooks.closed;
 
 })(document);
