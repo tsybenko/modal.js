@@ -145,6 +145,7 @@ module.exports = (document => function(el, options = {}) {
 
 	/** Default trigger */
 	this.addTrigger(el.querySelector('.btn-close'), 'click');
+	this.addTrigger(el.querySelector('.modal__background'), 'click');
 
 	// for (let [key] of Object.entries(events)) {
 	// 	this[`${key}`] = handler => el.addEventListener('key', event => handler(event));
