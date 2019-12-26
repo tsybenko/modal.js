@@ -1,6 +1,30 @@
+const aria = require('./plugins/aria');
+
 module.exports = (document => function(el, options = {}) {
 
 	this.initedHook = function(cb) {cb()};
+
+	let plugins = {};
+
+	this.plug = function(plugin) {
+		if (! plugins.hasOwnProperty(plugin.name)) {
+			plugins = {...plugins, plugin};
+
+			return true;
+		}
+
+		return false;
+	};
+
+	this.plug(aria);
+
+	const mapPluginsMethod = function (methodName, options) {
+		for (let plugin in plugins) {
+			if (plugins[plugin].methods.hasOwnProperty(methodName)) {
+				plugins[plugin].methods[methodName](options.event, options.element);
+			}
+		}
+	};
 
 	/**
 	 * Predefined events of the module
@@ -74,6 +98,9 @@ module.exports = (document => function(el, options = {}) {
 
 			if (! el.classList.contains('opened')) {
 				el.classList.add('opened');
+
+				mapPluginsMethod('showModal', { event: e, element: el });
+
 			}
 
 			el.dispatchEvent(events.opened(e));
@@ -91,8 +118,8 @@ module.exports = (document => function(el, options = {}) {
 
 			if (el.classList.contains('opened')) {
 				el.classList.remove('opened');
-				el.removeAttribute('aria-modal');
-				el.setAttribute('aria-hidden', 'true');
+
+				mapPluginsMethod('hideModal', { event: e, element: el });
 			}
 
 			el.dispatchEvent(events.closed(e));
