@@ -7,6 +7,7 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 	 * Predefined events of the module
 	 */
 	this.events = {
+		inited: data => new CustomEvent('inited', { detail: data }),
 		beforeOpen: data => new CustomEvent('beforeOpen', { detail: data }),
 		onOpen: data => new CustomEvent('onOpen', { detail: data, cancelable: true }),
 		opened: data => new CustomEvent('opened', { detail: data }),
@@ -32,6 +33,8 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 	 * @type {*|Document}
 	 */
 	let rootEl = this.options.rootEl || document;
+
+	rootEl.dispatchEvent(this.events.inited());
 
 	/**
 	 * Handler of "Escape" keyboard button
@@ -158,52 +161,60 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 	// 	this[`${key}`] = handler => rootEl.addEventListener('key', event => handler(event));
 	// }
 
+	const hooks = {
+		inited: handler => rootEl.addEventListener('inited', event => handler(event)),
+		beforeOpen: handler => rootEl.addEventListener('beforeOpen', event => handler(event)),
+		onOpen: handler => rootEl.addEventListener('onOpen', event => handler(event)),
+		opened: handler => rootEl.addEventListener('opened', event => handler(event)),
+		beforeClose: handler => rootEl.addEventListener('beforeClose', event => handler(event)),
+		onClose: handler => rootEl.addEventListener('onClose', event => handler(event)),
+		closed: handler => rootEl.addEventListener('closed', event => handler(event))
+	};
+
+	this.hooks = hooks;
+
+	this.inited = this.hooks.inited;
+
 	/**
 	 * Will call handler "handler" before modal window will be opened
 	 *
 	 * @param handler {Function}
 	 */
-	this.beforeOpen = handler =>
-		rootEl.addEventListener('beforeOpen', event => handler(event));
+	this.beforeOpen = this.hooks.beforeOpen;
 
 	/**
 	 * Will call handler "handler" right in moment before modal window will be opened
 	 *
 	 * @param handler {Function}
 	 */
-	this.onOpen = handler =>
-		rootEl.addEventListener('onOpen', event => handler(event));
+	this.onOpen = this.hooks.onOpen;
 
 	/**
 	 * Will call handler "handler" after modal window was opened
 	 *
 	 * @param handler {Function}
 	 */
-	this.opened = handler =>
-		rootEl.addEventListener('opened', event => handler(event));
+	this.opened = this.hooks.opened;
 
 	/**
 	 * Will call handler "handler" right in moment before modal window was closed
 	 *
 	 * @param handler {Function}
 	 */
-	this.onClose = handler =>
-		rootEl.addEventListener('onClose', event => handler(event));
+	this.onClose = this.hooks.onClose;
 
 	/**
 	 * Will call handler "handler" calls before modal window will be closed
 	 *
 	 * @param handler {Function}
 	 */
-	this.beforeClose = handler =>
-		rootEl.addEventListener('beforeClose', event => handler(event));
+	this.beforeClose = this.hooks.beforeClose;
 
 	/**
 	 * Will call handler "handler" after modal window was closed
 	 *
 	 * @param handler {Function}
 	 */
-	this.closed = handler =>
-		rootEl.addEventListener('closed', event => handler(event));
+	this.closed = this.hooks.closed;
 
 })(document);
