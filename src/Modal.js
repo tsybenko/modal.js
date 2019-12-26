@@ -43,7 +43,7 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 	let escHandler = function(e) {
 		if (e.key === "Escape") {
 			if (this.isShow()) {
-				this.toggleModal();
+				this.toggleModal(e);
 			}
 		}
 	};
