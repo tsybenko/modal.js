@@ -1,3 +1,8 @@
+html, body {
+	height: 100%;
+	min-height: 100%;
+}
+
 body {
 	display: flex;
 	flex-direction: row;
@@ -26,6 +31,7 @@ body {
 	background-color: rgba(185,188,195,.5);
 	z-index: 100;
 	transform: none;
+	cursor: crosshair;
 }
 
 /*.modal.opening {*/
@@ -67,12 +73,12 @@ body {
 	border: none;
 	border-radius: 9999999px;
 	transition: .3s;
-	box-shadow: 0 0px 0px rgb(150,150,150);
+	box-shadow: 0 0px 7px rgb(150,150,150);
 	transform: scale(1);
 }
 
 .btn_open:hover {
 	background-color: #4198ff;
-	box-shadow: 0 1px 2px rgb(200,200,200);
-	transform: scale(1.1);
+	box-shadow: 0 2px 12px #4198ff;
+	transform: scale(1.05);
 }
