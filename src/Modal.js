@@ -1,12 +1,11 @@
-module.exports = (document => function(el, triggers = [], options = {}) {
+module.exports = (document => function(el, options = {}) {
 
 	this.initedHook = function(cb) {cb()};
-	// this.triggerAddedHook = function(cb) {cb()};
 
 	/**
 	 * Predefined events of the module
 	 */
-	this.events = {
+	const events = {
 		inited: data => new CustomEvent('inited', { detail: data }),
 		beforeOpen: data => new CustomEvent('beforeOpen', { detail: data }),
 		onOpen: data => new CustomEvent('onOpen', { detail: data, cancelable: true }),
@@ -17,48 +16,33 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 		onToggle: data => new CustomEvent('onToggle', { detail: data }),
 	};
 
-	/**
-	 * Container
-	 */
-	this.el = el;
-
-	/**
-	 * Options of instance of the module
-	 */
-	this.options = options;
-
-	/**
-	 * Root element (HTML)
-	 *
-	 * @type {*|Document}
-	 */
-	let rootEl = this.options.rootEl || document;
-
-	rootEl.dispatchEvent(this.events.inited());
+	el.dispatchEvent(events.inited());
 
 	/**
 	 * Handler of "Escape" keyboard button
 	 * @param e {KeyboardEvent}
 	 */
-	let escHandler = function(e) {
+	let escHandler = (function(e) {
 		if (e.key === "Escape") {
 			if (this.isShow()) {
 				this.toggleModal(e);
 			}
 		}
-	};
+	}).bind(this);
 
 	/**
 	 * Listener of "Escape" keyboard button
 	 */
-	rootEl.addEventListener('keyup', e => escHandler.call(this, e));
+	document.addEventListener('keyup', event => escHandler.call(this, event));
 
 	/**
 	 * Triggers
 	 *
 	 * @type {Array}
 	 */
-	this.triggers = [];
+	this.triggers = (options.hasOwnProperty('triggers'))
+		? [...options.triggers]
+		: [];
 
 	/**
 	 * Check is modal hidden
@@ -66,7 +50,7 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 	 * @returns {boolean}
 	 */
 	this.isHidden = function() {
-		return this.el.style.visibility === 'hidden';
+		return el.style.visibility === 'hidden';
 	};
 
 	/**
@@ -83,16 +67,16 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 	 * Show modal window
 	 */
 	this.showModal = function(e) {
-		rootEl.dispatchEvent(this.events.beforeOpen(e))
+		el.dispatchEvent(events.beforeOpen(e))
 
-		if (rootEl.dispatchEvent(this.events.onOpen(e))) {
-			this.el.style.visibility = 'visible';
+		if (el.dispatchEvent(events.onOpen(e))) {
+			el.style.visibility = 'visible';
 
-			if (! this.el.classList.contains('opened')) {
-				this.el.classList.add('opened');
+			if (! el.classList.contains('opened')) {
+				el.classList.add('opened');
 			}
 
-			rootEl.dispatchEvent(this.events.opened(e));
+			el.dispatchEvent(events.opened(e));
 		}
 	};
 
@@ -100,16 +84,16 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 	 * Hide modal window
 	 */
 	this.hideModal = function(e) {
-		rootEl.dispatchEvent(this.events.beforeClose(e))
+		el.dispatchEvent(events.beforeClose(e))
 
-		if (rootEl.dispatchEvent(this.events.onClose(e))) {
-			this.el.style.visibility = 'hidden';
+		if (el.dispatchEvent(events.onClose(e))) {
+			el.style.visibility = 'hidden';
 
-			if (this.el.classList.contains('opened')) {
-				this.el.classList.remove('opened');
+			if (el.classList.contains('opened')) {
+				el.classList.remove('opened');
 			}
 
-			rootEl.dispatchEvent(this.events.closed(e));
+			el.dispatchEvent(events.closed(e));
 		}
 	};
 
@@ -146,29 +130,34 @@ module.exports = (document => function(el, triggers = [], options = {}) {
 	 */
 	this.addTrigger = function(el, eventName) {
 		if (! this.triggers.includes(el)) {
-			this.triggers.push(el);
+			this.triggers.push({ element: el, eventType: eventName });
 			el.addEventListener(eventName, this.handleTrigger);
-			// this.triggerAddedHook(function() {});
 			return true;
 		}
 		return false;
 	};
 
-	/** Default trigger */
-	this.addTrigger(this.el.querySelector('.btn-close'), 'click');
+	const mapTriggers = (function() {
+		this.triggers.map(trigger => this.addTrigger(trigger.element, trigger.eventType));
+	}).bind(this);
 
-	// for (let [key] of Object.entries(this.events)) {
-	// 	this[`${key}`] = handler => rootEl.addEventListener('key', event => handler(event));
+	mapTriggers();
+
+	/** Default trigger */
+	this.addTrigger(el.querySelector('.btn-close'), 'click');
+
+	// for (let [key] of Object.entries(events)) {
+	// 	this[`${key}`] = handler => el.addEventListener('key', event => handler(event));
 	// }
 
 	const hooks = {
-		inited: handler => rootEl.addEventListener('inited', event => handler(event)),
-		beforeOpen: handler => rootEl.addEventListener('beforeOpen', event => handler(event)),
-		onOpen: handler => rootEl.addEventListener('onOpen', event => handler(event)),
-		opened: handler => rootEl.addEventListener('opened', event => handler(event)),
-		beforeClose: handler => rootEl.addEventListener('beforeClose', event => handler(event)),
-		onClose: handler => rootEl.addEventListener('onClose', event => handler(event)),
-		closed: handler => rootEl.addEventListener('closed', event => handler(event))
+		inited: handler => el.addEventListener('inited', event => handler(event)),
+		beforeOpen: handler => el.addEventListener('beforeOpen', event => handler(event)),
+		onOpen: handler => el.addEventListener('onOpen', event => handler(event)),
+		opened: handler => el.addEventListener('opened', event => handler(event)),
+		beforeClose: handler => el.addEventListener('beforeClose', event => handler(event)),
+		onClose: handler => el.addEventListener('onClose', event => handler(event)),
+		closed: handler => el.addEventListener('closed', event => handler(event))
 	};
 
 	this.inited = hooks.inited;
