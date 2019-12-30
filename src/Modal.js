@@ -9,11 +9,23 @@ module.exports = (document => function(el, options = {}) {
 
 	this.initedHook = function(cb) {cb()};
 
-	let plugins = {};
+	/**
+	 * Store of plugins
+	 *
+	 * @type {Map<any, any>}
+	 */
+	let plugins = new Map();
 
+	/**
+	 * Add plugin into store
+	 *
+	 * @param plugin
+	 * @returns {boolean}
+	 */
 	this.plug = plugin => {
-		if (! plugins.hasOwnProperty(plugin.name)) {
-			plugins = {...plugins, [plugin.name]: plugin};
+
+		if (! plugins.has(plugin.name)) {
+			plugins.set(plugin.name, plugin);
 
 			return true;
 		}
@@ -22,10 +34,12 @@ module.exports = (document => function(el, options = {}) {
 	};
 
 	const mapPluginsMethod = (methodName, options) => {
-		for (let plugin in plugins) {
-			if (plugins[plugin].hasOwnProperty("methods")) {
-				if (plugins[plugin].methods.hasOwnProperty(methodName)) {
-					plugins[plugin].methods[methodName](options.event, options.element);
+		if (plugins.size > 0) {
+			for (let plugin of plugins.values()) {
+				if (plugin.hasOwnProperty("methods")) {
+					if (plugin.methods.hasOwnProperty(methodName)) {
+						plugin.methods[methodName](options.event, options.element);
+					}
 				}
 			}
 		}
