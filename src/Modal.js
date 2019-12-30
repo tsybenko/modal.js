@@ -37,7 +37,7 @@ module.exports = (document => function(el, options = {}) {
 	/**
 	 * Hooks
 	 *
-	 * @type {{onClose: (function(*): *), inited: (function(*): *), onOpen: (function(*): *), beforeClose: (function(*): *), closed: (function(*): *), opened: (function(*): *), beforeOpen: (function(*): *)}}
+	 * @type {{"[ON_CLOSE]": (function(*): *), "[ON_OPEN]": (function(*): *), "[BEFORE_CLOSE]": (function(*): *), "[CLOSED]": (function(*): *), "[OPENED]": (function(*): *), "[BEFORE_OPEN]": (function(*): *)}}
 	 */
 	const hooks = require('./hooks')(el);
 
