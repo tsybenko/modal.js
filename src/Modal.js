@@ -33,6 +33,12 @@ module.exports = (document => function(el, options = {}) {
 		return false;
 	};
 
+	/**
+	 * Will call "methodName" inside of methods of plugins
+	 *
+	 * @param methodName {string}
+	 * @param options {Object}
+	 */
 	const mapPluginsMethod = (methodName, options) => {
 		if (plugins.size > 0) {
 			for (let plugin of plugins.values()) {
