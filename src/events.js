@@ -1,10 +1,12 @@
+const { BEFORE_OPEN, ON_OPEN, OPENED, BEFORE_CLOSE, ON_CLOSE, CLOSED } = require('./constants');
+
 module.exports = {
-	inited: data => new CustomEvent('inited', { detail: data }),
-	beforeOpen: data => new CustomEvent('beforeOpen', { detail: data }),
-	onOpen: data => new CustomEvent('onOpen', { detail: data, cancelable: true }),
-	opened: data => new CustomEvent('opened', { detail: data }),
-	beforeClose: data => new CustomEvent('beforeClose', { detail: data }),
-	onClose: data => new CustomEvent('onClose', { detail: data, cancelable: true }),
-	closed: data => new CustomEvent('closed', { detail: data }),
+	// inited: data => new CustomEvent('inited', { detail: data }),
+	[BEFORE_OPEN]: data => new CustomEvent(BEFORE_OPEN, { detail: data }),
+	[ON_OPEN]: data => new CustomEvent(ON_OPEN, { detail: data, cancelable: true }),
+	[OPENED]: data => new CustomEvent(OPENED, { detail: data }),
+	[BEFORE_CLOSE]: data => new CustomEvent(BEFORE_CLOSE, { detail: data }),
+	[ON_CLOSE]: data => new CustomEvent(ON_CLOSE, { detail: data, cancelable: true }),
+	[CLOSED]: data => new CustomEvent(CLOSED, { detail: data }),
 	onToggle: data => new CustomEvent('onToggle', { detail: data }),
 };
