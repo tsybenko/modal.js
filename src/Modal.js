@@ -1,8 +1,8 @@
+const utils = require('./utils');
+
 const aria = require('./plugins/aria');
 
-const submodules = {
-	plugin: require('./plugins')
-};
+const { MODE_DEV } = require('./constants');
 
 module.exports = (document => function(el, options = {}) {
 
@@ -10,7 +10,25 @@ module.exports = (document => function(el, options = {}) {
 
 	let plugins = {};
 
-	this.plug = submodules.plugin.registerPlugin(plugins);
+	this.plug = plugin => {
+		if (! plugins.hasOwnProperty(plugin.name)) {
+			plugins = {...plugins, [plugin.name]: plugin};
+
+			return true;
+		}
+
+		return false;
+	};
+
+	const mapPluginsMethod = (methodName, options) => {
+		for (let plugin in plugins) {
+			if (plugins[plugin].hasOwnProperty("methods")) {
+				if (plugins[plugin].methods.hasOwnProperty(methodName)) {
+					plugins[plugin].methods[methodName](options.event, options.element);
+				}
+			}
+		}
+	};
 
 	this.plug(aria);
 
@@ -24,8 +42,6 @@ module.exports = (document => function(el, options = {}) {
 	const hooks = require('./hooks')(el);
 
 	const events = require('./events');
-
-	el.dispatchEvent(events.inited());
 
 	/**
 	 * Handler of "Escape" keyboard button
@@ -73,48 +89,87 @@ module.exports = (document => function(el, options = {}) {
 	};
 
 	/**
+	 * Handler of modal window opening, contains the logic of how it should be
+	 */
+	let showModalHanlder = function() {
+		el.style.visibility = 'visible';
+
+		if (!el.classList.contains('opened')) {
+			el.classList.add('opened');
+		}
+	};
+
+	/**
 	 * Show modal window
 	 */
-	this.showModal = function(e) {
-		el.dispatchEvent(events.beforeOpen(e))
+	this.showModal = function showModal(e) {
+
+		if (typeof e === 'undefined') e = {};
+
+		el.dispatchEvent(events.beforeOpen(e));
 
 		if (el.dispatchEvent(events.onOpen(e))) {
-			el.style.visibility = 'visible';
 
-			if (! el.classList.contains('opened')) {
-				el.classList.add('opened');
+			showModalHanlder();
 
-				mapPluginsMethod('showModal', { event: e, element: el });
-
-			}
+			mapPluginsMethod('showModal', { event: e, element: el });
 
 			el.dispatchEvent(events.opened(e));
 		}
 	};
 
 	/**
+	 * Handler of modal window closing, contains the logic of how it should be
+	 */
+	let hideModalHandler = function() {
+		el.style.visibility = 'hidden';
+
+		if (el.classList.contains('opened')) {
+			el.classList.remove('opened');
+		}
+	};
+
+	/**
 	 * Hide modal window
 	 */
-	this.hideModal = function(e) {
+	this.hideModal = function hideModal(e) {
+
+		if (typeof e === 'undefined') e = {};
+
 		el.dispatchEvent(events.beforeClose(e));
 
 		if (el.dispatchEvent(events.onClose(e))) {
-			el.style.visibility = 'hidden';
 
-			if (el.classList.contains('opened')) {
-				el.classList.remove('opened');
+			hideModalHandler();
 
-				mapPluginsMethod('hideModal', { event: e, element: el });
-			}
+			mapPluginsMethod('hideModal', { event: e, element: el });
 
 			el.dispatchEvent(events.closed(e));
 		}
 	};
 
 	/**
+	 * Opens the modal window
+	 *
+	 * @param before {function} - callback, will be called before modal window will be opened
+	 * @param after {function} - callback, will be called after modal window will be opened
+	 */
+	this.open = function open(before, after) {
+		if (utils.isFunc(before)) {
+			before(this, el, this.showModal);
+
+			if (utils.isFunc(after)) {
+				after(this, el, this.hideModal);
+			}
+		} else {
+			this.showModal();
+		}
+	};
+
+	/**
 	 * Toggle modal window
 	 */
-	this.toggleModal = function(e) {
+	this.toggleModal = function toggleModal(e) {
 		this.isHidden() === true
 			? this.showModal(e)
 			: this.hideModal(e);
@@ -124,7 +179,7 @@ module.exports = (document => function(el, options = {}) {
 	 * Hides modal when instance was initialised
 	 */
 	this.initedHook((function() {
-		this.hideModal();
+		hideModalHandler();
 	}).bind(this));
 
 
@@ -142,7 +197,7 @@ module.exports = (document => function(el, options = {}) {
 	 * @param eventName {String}
 	 * @returns {boolean}
 	 */
-	this.addTrigger = function(el, eventName) {
+	this.addTrigger = function addTrigger(el, eventName) {
 		if (! this.triggers.includes(el)) {
 			this.triggers.push({ element: el, eventType: eventName });
 			el.addEventListener(eventName, this.handleTrigger);
@@ -164,13 +219,6 @@ module.exports = (document => function(el, options = {}) {
 	// for (let [key] of Object.entries(events)) {
 	// 	this[`${key}`] = handler => el.addEventListener('key', event => handler(event));
 	// }
-
-	/**
-	 * Will call handler "handler" after the module instantiation
-	 *
-	 * @param handler {Function}
-	 */
-	this.inited = hooks.inited;
 
 	/**
 	 * Will call handler "handler" before modal window will be opened
