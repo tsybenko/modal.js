@@ -1,6 +1,7 @@
 const utils = require('./utils');
 
 const aria = require('./plugins/aria');
+const logger = require('./plugins/logger');
 
 const { MODE_DEV } = require('./constants');
 
@@ -31,8 +32,7 @@ module.exports = (document => function(el, options = {}) {
 	};
 
 	this.plug(aria);
-
-	const mapPluginsMethod = submodules.plugin.mapPluginsMethod(plugins);
+	this.plug(logger({ mode: MODE_DEV }));
 
 	/**
 	 * Hooks
