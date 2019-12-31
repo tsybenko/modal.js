@@ -28,22 +28,19 @@ let Modal = (document => function(el, options = {}) {
 	 */
 	let plugins = new Map();
 
+	const pluginsUtils = require('./plugins')(plugins);
+
+	this.listPlugins = function () {
+		return Array.from(plugins.keys());
+	};
+
 	/**
 	 * Add plugin into store
 	 *
 	 * @param plugin
 	 * @returns {boolean}
 	 */
-	this.plug = plugin => {
-
-		if (! plugins.has(plugin.name)) {
-			plugins.set(plugin.name, plugin);
-
-			return true;
-		}
-
-		return false;
-	};
+	this.plug = pluginsUtils.registerPlugin;
 
 	/**
 	 * Will call "methodName" inside of methods of plugins
@@ -51,17 +48,7 @@ let Modal = (document => function(el, options = {}) {
 	 * @param methodName {string}
 	 * @param options {Object}
 	 */
-	const mapPluginsMethod = (methodName, options) => {
-		if (plugins.size > 0) {
-			for (let plugin of plugins.values()) {
-				if (plugin.hasOwnProperty("methods")) {
-					if (plugin.methods.hasOwnProperty(methodName)) {
-						plugin.methods[methodName](options.event, options.element);
-					}
-				}
-			}
-		}
-	};
+	const mapPluginsMethod = pluginsUtils.mapPluginsMethod;
 
 	this.plug(aria);
 	this.plug(logger({ mode: MODE_DEV }));
