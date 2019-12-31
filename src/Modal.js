@@ -177,7 +177,7 @@ let Modal = (document => function(el, options = {}) {
 	 * Opens the modal window
 	 *
 	 * @param before {function} - callback, will be called before modal window will be opened
-	 * @param after {function} - callback, will be called after modal window will be opened
+	 * @param after {function} - callback, will be called after modal window was opened
 	 */
 	this.open = function open(before, after) {
 		if (utils.isFunc(before)) {
