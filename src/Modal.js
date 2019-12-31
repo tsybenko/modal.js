@@ -5,7 +5,19 @@ const logger = require('./plugins/logger');
 
 const { MODE_DEV } = require('./constants');
 
-module.exports = (document => function(el, options = {}) {
+/**
+ * Registers event listeners and it handlers
+ *
+ * @param context {Object}
+ * @param hooks {Object}
+ */
+const registerHooks = (context, hooks) => {
+	for (let [name, handler] of Object.entries(hooks)) {
+		context[name] = handler;
+	}
+};
+
+let Modal = (document => function(el, options = {}) {
 
 	this.initedHook = function(cb) {cb()};
 
@@ -236,50 +248,8 @@ module.exports = (document => function(el, options = {}) {
 	this.addTrigger(el.querySelector('.btn-close'), 'click');
 	this.addTrigger(el.querySelector('.modal__background'), 'click');
 
-	// for (let [key] of Object.entries(events)) {
-	// 	this[`${key}`] = handler => el.addEventListener('key', event => handler(event));
-	// }
-
-	/**
-	 * Will call handler "handler" before modal window will be opened
-	 *
-	 * @param handler {Function}
-	 */
-	this.beforeOpen = hooks.beforeOpen;
-
-	/**
-	 * Will call handler "handler" right in moment before modal window will be opened
-	 *
-	 * @param handler {Function}
-	 */
-	this.onOpen = hooks.onOpen;
-
-	/**
-	 * Will call handler "handler" after modal window was opened
-	 *
-	 * @param handler {Function}
-	 */
-	this.opened = hooks.opened;
-
-	/**
-	 * Will call handler "handler" right in moment before modal window was closed
-	 *
-	 * @param handler {Function}
-	 */
-	this.onClose = hooks.onClose;
-
-	/**
-	 * Will call handler "handler" calls before modal window will be closed
-	 *
-	 * @param handler {Function}
-	 */
-	this.beforeClose = hooks.beforeClose;
-
-	/**
-	 * Will call handler "handler" after modal window was closed
-	 *
-	 * @param handler {Function}
-	 */
-	this.closed = hooks.closed;
+	registerHooks(this, hooks);
 
 })(document);
+
+module.exports = Modal;
