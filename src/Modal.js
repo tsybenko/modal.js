@@ -121,21 +121,24 @@ let Modal = (document => function(el, options = {}) {
 	/**
 	 * Show modal window
 	 */
-	this.showModal = function showModal(e) {
+	this.showModal = (function showModal(e) {
 
 		if (typeof e === 'undefined') e = {};
 
-		el.dispatchEvent(events.beforeOpen(e));
+		if (this.isHidden()) {
+			el.dispatchEvent(events.beforeOpen(e));
 
-		if (el.dispatchEvent(events.onOpen(e))) {
+			if (el.dispatchEvent(events.onOpen(e))) {
 
-			showModalHanlder();
+				showModalHanlder();
 
-			mapPluginsMethod('showModal', { event: e, element: el });
+				mapPluginsMethod('showModal', { event: e, element: el });
 
-			el.dispatchEvent(events.opened(e));
+				el.dispatchEvent(events.opened(e));
+			}
 		}
-	};
+
+	}).bind(this);
 
 	/**
 	 * Handler of modal window closing, contains the logic of how it should be
@@ -151,21 +154,24 @@ let Modal = (document => function(el, options = {}) {
 	/**
 	 * Hide modal window
 	 */
-	this.hideModal = function hideModal(e) {
+	this.hideModal = (function hideModal(e) {
 
 		if (typeof e === 'undefined') e = {};
 
-		el.dispatchEvent(events.beforeClose(e));
+		if (! this.isHidden()) {
+			el.dispatchEvent(events.beforeClose(e));
 
-		if (el.dispatchEvent(events.onClose(e))) {
+			if (el.dispatchEvent(events.onClose(e))) {
 
-			hideModalHandler();
+				hideModalHandler();
 
-			mapPluginsMethod('hideModal', { event: e, element: el });
+				mapPluginsMethod('hideModal', { event: e, element: el });
 
-			el.dispatchEvent(events.closed(e));
+				el.dispatchEvent(events.closed(e));
+			}
 		}
-	};
+
+	}).bind(this);
 
 	/**
 	 * Opens the modal window
