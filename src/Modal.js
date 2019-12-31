@@ -229,7 +229,7 @@ let Modal = (document => function(el, options = {}) {
 	/**
 	 * Handler that will be assigned to a trigger
 	 */
-	this.handleTrigger = (function(e) {
+	const handleTrigger = (function(e) {
 		this.toggleModal(e);
 	}).bind(this);
 
@@ -243,7 +243,7 @@ let Modal = (document => function(el, options = {}) {
 	this.addTrigger = function addTrigger(el, eventName) {
 		if (! this.triggers.includes(el)) {
 			this.triggers.push({ element: el, eventType: eventName });
-			el.addEventListener(eventName, this.handleTrigger);
+			el.addEventListener(eventName, handleTrigger);
 			return true;
 		}
 		return false;
