@@ -192,6 +192,24 @@ let Modal = (document => function(el, options = {}) {
 	};
 
 	/**
+	 * Closes the modal window
+	 *
+	 * @param before {function} - callback, will be called before modal window will be closed
+	 * @param after {function} - callback, will be called after modal window was closed
+	 */
+	this.close = function close(before, after) {
+		if (utils.isFunc(before)) {
+			before(this, el, this.hideModal);
+
+			if (utils.isFunc(after)) {
+				after(this, el, this.showModal);
+			}
+		} else {
+			this.hideModal();
+		}
+	};
+
+	/**
 	 * Toggle modal window
 	 */
 	this.toggleModal = function toggleModal(e) {
