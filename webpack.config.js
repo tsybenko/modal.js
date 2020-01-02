@@ -15,10 +15,13 @@ module.exports = (env) => {
 			library: "Modal"
 		},
 		mode,
+		resolve: {
+			extensions: [ '.tsx', '.ts', '.js' ],
+		},
 		module: {
 			rules: [
 				{
-					test: /\.ts$/,
+					test: /\.ts(x?)$/,
 					exclude: /node_modules/,
 					loader: "ts-loader"
 				},

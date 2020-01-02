@@ -1,6 +1,14 @@
-import { BEFORE_OPEN, ON_OPEN, OPENED, BEFORE_CLOSE, ON_CLOSE, CLOSED } from './constants.ts';
+import {
+	BEFORE_OPEN,
+	ON_OPEN, OPENED,
+	BEFORE_CLOSE,
+	ON_CLOSE,
+	CLOSED
+} from './constants';
 
-export default () => ({
+import { LibraryEvent } from "./types";
+
+export default (): LibraryEvent => ({
 	[BEFORE_OPEN]: (data): CustomEvent => new CustomEvent(BEFORE_OPEN, { detail: data }),
 	[ON_OPEN]: (data): CustomEvent => new CustomEvent(ON_OPEN, { detail: data, cancelable: true }),
 	[OPENED]: (data): CustomEvent => new CustomEvent(OPENED, { detail: data }),

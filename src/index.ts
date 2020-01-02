@@ -1,3 +1,3 @@
-import { Modal } from './Modal.ts';
+import { Modal } from './Modal';
 
 export = Modal;

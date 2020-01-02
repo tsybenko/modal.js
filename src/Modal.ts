@@ -1,12 +1,14 @@
 "use strict";
 
-import * as utils from './utils.ts';
+import * as utils from './utils';
 
 // const aria = require('./plugins/aria');
 // const logger = require('./plugins/logger');
 // const history = require('./plugins/history');
 
 // import { MODE_DEV } from './constants.ts';
+
+import { LibraryEvent } from "./types";
 
 /**
  * Registers event listeners and it handlers
@@ -20,9 +22,9 @@ const registerHooks = (context, hooks) => {
 	}
 };
 
-import getHooks from './hooks.ts';
-import getEvents from './events.ts';
-import pluginsStore from "./plugins.ts";
+import getHooks from './hooks';
+import getEvents from './events';
+import pluginsStore from "./plugins";
 
 export const Modal = function(el, options = {
 	triggers: [],
@@ -68,9 +70,9 @@ export const Modal = function(el, options = {
 	 *
 	 * @type {object}
 	 */
-	const hooks = getHooks(el);
+	const hooks: object = getHooks(el);
 
-	const events = getEvents();
+	const events: LibraryEvent = getEvents();
 
 	/**
 	 * Handler of "Escape" keyboard button
