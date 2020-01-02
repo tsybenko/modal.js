@@ -1,4 +1,9 @@
-export default (store): object => ({
+interface OptionsObject {
+	event: CustomEvent | Event,
+	element: Element
+}
+
+export default (store) => ({
 	registerPlugin: plugin => {
 
 		if (! store.has(plugin.name)) {
@@ -9,7 +14,7 @@ export default (store): object => ({
 
 		return false;
 	},
-	mapPluginsMethod: (methodName: string, options) => {
+	mapPluginsMethod: (methodName: string, options: OptionsObject) => {
 		if (store.size > 0) {
 			for (let plugin of store.values()) {
 				if (plugin.hasOwnProperty("methods")) {

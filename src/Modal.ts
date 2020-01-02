@@ -24,7 +24,9 @@ import getHooks from './hooks.ts';
 import getEvents from './events.ts';
 import pluginsStore from "./plugins.ts";
 
-export const Modal = function(el, options = {}) {
+export const Modal = function(el, options = {
+	triggers: [],
+}) {
 
 	this.initedHook = function(cb) {cb()};
 
