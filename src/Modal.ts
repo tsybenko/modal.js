@@ -16,7 +16,7 @@ import { LibraryEvent } from "./types";
  * @param context {Object}
  * @param hooks {Object}
  */
-const registerHooks = (context, hooks) => {
+const registerHooks = (context: object, hooks: object) => {
 	for (let [name, handler] of Object.entries(hooks)) {
 		context[name] = handler;
 	}
@@ -26,7 +26,11 @@ import getHooks from './hooks';
 import getEvents from './events';
 import pluginsStore from "./plugins";
 
-export const Modal = function(el, options = {
+interface ModalOptions {
+	triggers: object[]
+}
+
+export const Modal = function(el: HTMLElement, options: ModalOptions = {
 	triggers: [],
 }) {
 

@@ -1,7 +1,4 @@
-interface OptionsObject {
-	event: CustomEvent | Event,
-	element: Element
-}
+import { OptionsObject } from "./interfaces";
 
 export default (store) => ({
 	registerPlugin: plugin => {
