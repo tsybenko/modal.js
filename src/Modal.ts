@@ -25,19 +25,14 @@ const registerHooks = (context: object, hooks: object) => {
 import getHooks from './hooks';
 import getEvents from './events';
 import pluginsStore from "./plugins";
+import { ModalOptions } from "./interfaces";
 
-interface Trigger {
-	element: HTMLElement,
-	eventType: string
-}
 
-interface ModalOptions {
-	triggers: Trigger[]
-}
-
-export const Modal = function(el: HTMLElement, options: ModalOptions = {
+const defaults: ModalOptions = {
 	triggers: [],
-}) {
+};
+
+export const Modal = function(el: HTMLElement, options: ModalOptions = defaults) {
 
 	this.initedHook = function(cb) {cb()};
 
@@ -87,7 +82,7 @@ export const Modal = function(el: HTMLElement, options: ModalOptions = {
 	 * Handler of "Escape" keyboard button
 	 * @param e {KeyboardEvent}
 	 */
-	let escHandler = (function(e) {
+	let escHandler = (function(e: KeyboardEvent) {
 		if (e.key === "Escape") {
 			if (this.isShow()) {
 				this.toggleModal(e);
@@ -98,7 +93,7 @@ export const Modal = function(el: HTMLElement, options: ModalOptions = {
 	/**
 	 * Listener of "Escape" keyboard button
 	 */
-	document.addEventListener('keyup', event => escHandler.call(this, event));
+	document.addEventListener('keyup', (event: KeyboardEvent) => escHandler.call(this, event));
 
 	/**
 	 * Triggers
@@ -114,9 +109,7 @@ export const Modal = function(el: HTMLElement, options: ModalOptions = {
 	 *
 	 * @returns {boolean}
 	 */
-	this.isHidden = function() {
-		return el.style.visibility === 'hidden';
-	};
+	this.isHidden = (): boolean => el.style.visibility === 'hidden';
 
 	/**
 	 * Check is modal shows
@@ -124,14 +117,12 @@ export const Modal = function(el: HTMLElement, options: ModalOptions = {
 	 *
 	 * @returns {boolean}
 	 */
-	this.isShow = function() {
-		return !this.isHidden();
-	};
+	this.isShow = (): boolean => !this.isHidden();
 
 	/**
 	 * Handler of modal window opening, contains the logic of how it should be
 	 */
-	let showModalHanlder = function() {
+	let showModalHanlder = function(): void {
 		el.style.visibility = 'visible';
 
 		if (!el.classList.contains('opened')) {
@@ -200,7 +191,7 @@ export const Modal = function(el: HTMLElement, options: ModalOptions = {
 	 * @param before {function} - callback, will be called before modal window will be opened
 	 * @param after {function} - callback, will be called after modal window was opened
 	 */
-	this.open = function open(before, after) {
+	this.open = function open(before: Function | null, after: Function | null) {
 		if (utils.isFunc(before)) {
 			before(this, el, this.showModal);
 
@@ -218,7 +209,7 @@ export const Modal = function(el: HTMLElement, options: ModalOptions = {
 	 * @param before {function} - callback, will be called before modal window will be closed
 	 * @param after {function} - callback, will be called after modal window was closed
 	 */
-	this.close = function close(before, after) {
+	this.close = function close(before: Function | null, after: Function | null) {
 		if (utils.isFunc(before)) {
 			before(this, el, this.hideModal);
 
@@ -233,7 +224,7 @@ export const Modal = function(el: HTMLElement, options: ModalOptions = {
 	/**
 	 * Toggle modal window
 	 */
-	this.toggleModal = function toggleModal(e) {
+	this.toggleModal = function toggleModal(e: Event | CustomEvent | KeyboardEvent): void {
 		this.isHidden() === true
 			? this.showModal(e)
 			: this.hideModal(e);
@@ -261,7 +252,7 @@ export const Modal = function(el: HTMLElement, options: ModalOptions = {
 	 * @param eventName {String}
 	 * @returns {boolean}
 	 */
-	this.addTrigger = function addTrigger(el, eventName) {
+	this.addTrigger = function addTrigger(el: HTMLElement, eventName: string): boolean {
 		if (! this.triggers.includes(el)) {
 			this.triggers.push({ element: el, eventType: eventName });
 			el.addEventListener(eventName, handleTrigger);
