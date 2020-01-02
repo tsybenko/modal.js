@@ -26,8 +26,13 @@ import getHooks from './hooks';
 import getEvents from './events';
 import pluginsStore from "./plugins";
 
+interface Trigger {
+	element: HTMLElement,
+	eventType: string
+}
+
 interface ModalOptions {
-	triggers: object[]
+	triggers: Trigger[]
 }
 
 export const Modal = function(el: HTMLElement, options: ModalOptions = {
