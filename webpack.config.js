@@ -23,7 +23,10 @@ module.exports = (env) => {
 				{
 					test: /\.ts(x?)$/,
 					exclude: /node_modules/,
-					loader: "ts-loader"
+					loaders: [
+						"babel-loader",
+						"ts-loader"
+					],
 				},
 				{
 					test: /\.js$/,
