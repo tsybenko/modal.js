@@ -1,4 +1,4 @@
-module.exports = store => ({
+export default (store): object => ({
 	registerPlugin: plugin => {
 
 		if (! store.has(plugin.name)) {
@@ -9,7 +9,7 @@ module.exports = store => ({
 
 		return false;
 	},
-	mapPluginsMethod: (methodName, options) => {
+	mapPluginsMethod: (methodName: string, options) => {
 		if (store.size > 0) {
 			for (let plugin of store.values()) {
 				if (plugin.hasOwnProperty("methods")) {

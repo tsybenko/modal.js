@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build-dev": "webpack --env.production=false",
-    "build-prod": "webpack --env.production=true"
+    "watch-dev": "webpack --env.production=false --watch",
+    "build-prod": "webpack --env.production=true",
+    "watch-prod": "webpack --env.production=true --watch"
   },
   "repository": {
     "type": "git",
@@ -21,6 +23,10 @@
     "@babel/core": "^7.7.7",
     "@babel/preset-env": "^7.7.7",
     "babel-loader": "^8.0.6",
+    "jest": "^24.9.0",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.4",
+    "uglifyjs-webpack-plugin": "^2.2.0",
     "webpack": "^4.41.4",
     "webpack-cli": "^3.3.10"
   }

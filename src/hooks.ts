@@ -1,7 +1,13 @@
-const { BEFORE_OPEN, ON_OPEN, OPENED, BEFORE_CLOSE, ON_CLOSE, CLOSED } = require('./constants');
+import {
+	BEFORE_OPEN,
+	ON_OPEN,
+	OPENED,
+	BEFORE_CLOSE,
+	ON_CLOSE,
+	CLOSED
+} from './constants.ts';
 
-module.exports = element => ({
-	// inited: handler => element.addEventListener('inited', event => handler(event)),
+export default (element: Element): object => ({
 	/**
 	 * Will call handler "handler" before modal window will be opened
 	 *

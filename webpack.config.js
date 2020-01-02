@@ -8,7 +8,7 @@ module.exports = (env) => {
 		: MODE_DEV;
 
 	return {
-		entry: './src/index.js',
+		entry: './src/index.ts',
 		output: {
 			filename: 'bundle.js',
 			path: path.resolve(__dirname, 'dist'),
@@ -17,6 +17,11 @@ module.exports = (env) => {
 		mode,
 		module: {
 			rules: [
+				{
+					test: /\.ts$/,
+					exclude: /node_modules/,
+					loader: "ts-loader"
+				},
 				{
 					test: /\.js$/,
 					exclude: /node_modules/,

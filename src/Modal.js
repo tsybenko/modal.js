@@ -1,9 +1,12 @@
-const utils = require('./utils');
+"use strict";
 
-const aria = require('./plugins/aria');
-const logger = require('./plugins/logger');
+import * as utils from './utils.ts';
 
-const { MODE_DEV } = require('./constants');
+// const aria = require('./plugins/aria');
+// const logger = require('./plugins/logger');
+// const history = require('./plugins/history');
+
+// import { MODE_DEV } from './constants.ts';
 
 /**
  * Registers event listeners and it handlers
@@ -17,7 +20,11 @@ const registerHooks = (context, hooks) => {
 	}
 };
 
-const Modal = (document => function(el, options = {}) {
+import getHooks from './hooks.ts';
+import getEvents from './events.ts';
+import pluginsStore from "./plugins.ts";
+
+export const Modal = function(el, options = {}) {
 
 	this.initedHook = function(cb) {cb()};
 
@@ -28,7 +35,7 @@ const Modal = (document => function(el, options = {}) {
 	 */
 	let plugins = new Map();
 
-	const pluginsUtils = require('./plugins')(plugins);
+	const pluginsUtils = pluginsStore(plugins);
 
 	this.listPlugins = function () {
 		return Array.from(plugins.keys());
@@ -50,17 +57,18 @@ const Modal = (document => function(el, options = {}) {
 	 */
 	const mapPluginsMethod = pluginsUtils.mapPluginsMethod;
 
-	this.plug(aria);
-	this.plug(logger({ mode: MODE_DEV }));
+	// this.plug(aria);
+	this.plug(history);
+	// this.plug(logger({ mode: MODE_DEV }));
 
 	/**
 	 * Hooks
 	 *
-	 * @type {{"[ON_CLOSE]": (function(*): *), "[ON_OPEN]": (function(*): *), "[BEFORE_CLOSE]": (function(*): *), "[CLOSED]": (function(*): *), "[OPENED]": (function(*): *), "[BEFORE_OPEN]": (function(*): *)}}
+	 * @type {object}
 	 */
-	const hooks = require('./hooks')(el);
+	const hooks = getHooks(el);
 
-	const events = require('./events');
+	const events = getEvents();
 
 	/**
 	 * Handler of "Escape" keyboard button
@@ -261,6 +269,4 @@ const Modal = (document => function(el, options = {}) {
 
 	registerHooks(this, hooks);
 
-})(document);
-
-module.exports = Modal;
+};
