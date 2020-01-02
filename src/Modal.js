@@ -17,7 +17,7 @@ const registerHooks = (context, hooks) => {
 	}
 };
 
-let Modal = (document => function(el, options = {}) {
+const Modal = (document => function(el, options = {}) {
 
 	this.initedHook = function(cb) {cb()};
 
