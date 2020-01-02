@@ -1,4 +1,8 @@
-import { Trigger, ModalOptions } from "./interfaces";
+import {
+	Trigger,
+	ModalOptions
+} from "./interfaces/";
+
 import { isFunc } from './utils';
 
 import getHooks from './hooks';
@@ -6,7 +10,7 @@ import getEvents from './events';
 
 const defaults: ModalOptions = {
 	triggers: [],
-	plugins: {}
+	plugins: new Map()
 };
 
 class Modal {

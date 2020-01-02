@@ -1,7 +1,7 @@
-import { OptionsObject } from "./interfaces";
+import { OptionsObject, Plugin } from "./interfaces/";
 
 export default (store) => ({
-	registerPlugin: plugin => {
+	registerPlugin: (plugin: Plugin): boolean => {
 
 		if (! store.has(plugin.name)) {
 			store.set(plugin.name, plugin);

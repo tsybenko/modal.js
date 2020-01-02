@@ -1,13 +1,8 @@
-"use strict";
-
 import * as utils from './utils';
-
-// const aria = require('./plugins/aria');
-// const logger = require('./plugins/logger');
-// const history = require('./plugins/history');
-
-// import { MODE_DEV } from './constants.ts';
-
+import getHooks from './hooks';
+import getEvents from './events';
+import pluginsStore from "./plugins";
+import { ModalOptions }  from "./interfaces/";
 import { LibraryEvent } from "./types";
 
 /**
@@ -22,30 +17,28 @@ const registerHooks = (context: object, hooks: object) => {
 	}
 };
 
-import getHooks from './hooks';
-import getEvents from './events';
-import pluginsStore from "./plugins";
-import { ModalOptions } from "./interfaces";
-
-
 const defaults: ModalOptions = {
 	triggers: [],
+	plugins: new Map()
 };
 
-export const Modal = function(el: HTMLElement, options: ModalOptions = defaults) {
+export const Modal = function(
+	el: HTMLElement,
+	options: ModalOptions = defaults
+) {
 
-	this.initedHook = function(cb) {cb()};
+	this.initedHook = function(cb: Function) {cb()};
 
 	/**
 	 * Store of plugins
 	 *
-	 * @type {Map<any, any>}
+	 * @type {Map<string, object>}
 	 */
-	let plugins = new Map();
+	let plugins: Map<string, object> = new Map();
 
 	const pluginsUtils = pluginsStore(plugins);
 
-	this.listPlugins = function () {
+	this.listPlugins = function(): string[] {
 		return Array.from(plugins.keys());
 	};
 
@@ -64,10 +57,6 @@ export const Modal = function(el: HTMLElement, options: ModalOptions = defaults)
 	 * @param options {Object}
 	 */
 	const mapPluginsMethod = pluginsUtils.mapPluginsMethod;
-
-	// this.plug(aria);
-	this.plug(history);
-	// this.plug(logger({ mode: MODE_DEV }));
 
 	/**
 	 * Hooks
@@ -166,7 +155,7 @@ export const Modal = function(el: HTMLElement, options: ModalOptions = defaults)
 	/**
 	 * Hide modal window
 	 */
-	this.hideModal = (function hideModal(e) {
+	this.hideModal = (function hideModal(e: any) {
 
 		if (typeof e === 'undefined') e = {};
 
