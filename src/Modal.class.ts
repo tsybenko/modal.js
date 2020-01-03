@@ -153,7 +153,6 @@ export class Modal {
 
 		if (this.isHidden()) {
 			this.element.dispatchEvent(this.events.beforeOpen(event));
-			debugger;
 
 			if (this.element.dispatchEvent(this.events.onOpen(event))) {
 
