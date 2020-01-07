@@ -70,7 +70,7 @@ const Modal = function(
 	 */
 	document.addEventListener('keyup', (event: KeyboardEvent) => ((e: KeyboardEvent): void => {
 		if (e.key === "Escape") {
-			if (this.isOpen()) {
+			if (this.isOpen(this, el)) {
 				toggleModal(e);
 			}
 		}
@@ -90,13 +90,13 @@ const Modal = function(
 	 *
 	 * @returns {boolean}
 	 */
-	this.isClose = (): boolean => !this.isOpen();
+	this.isClose = (instance, element): boolean => !this.isOpen(instance, element);
 
 	/**
 	 * Show modal window
 	 */
 	this.showModal = (event: CustomEvent = events[SYSTEM_DEFAULT_EVENT]()) => {
-		if (this.isClose()) {
+		if (this.isClose(this, el)) {
 			el.dispatchEvent(events.beforeOpen(event));
 
 			if (el.dispatchEvent(events.onOpen(event))) {
@@ -111,7 +111,7 @@ const Modal = function(
 	 * Hide modal window
 	 */
 	this.hideModal = (event: CustomEvent = events[SYSTEM_DEFAULT_EVENT]()) => {
-		if (! this.isClose()) {
+		if (! this.isClose(this, el)) {
 			el.dispatchEvent(events.beforeClose(event));
 
 			if (el.dispatchEvent(events.onClose(event))) {
@@ -168,7 +168,7 @@ const Modal = function(
 	 * Toggle modal window
 	 */
 	const toggleModal = (e: Event | CustomEvent | KeyboardEvent): void => {
-		this.isClose() === true
+		this.isClose(this, el) === true
 			? this.showModal(e)
 			: this.hideModal(e);
 	};
