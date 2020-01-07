@@ -1,5 +1,7 @@
 # Modal.js
 
+[Demo](https://tsybenko.github.io/modal.js/)
+
 ## Usage example
 
 **HTML**

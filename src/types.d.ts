@@ -1,0 +1,1 @@
+export declare type LibraryEvent = { [p: string]: (data) => CustomEvent };

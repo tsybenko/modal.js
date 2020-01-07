@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Modal.js</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<div style="display: flex; flex-direction: column;">
+		<div style="display: flex; justify-content: center;">
+			<div class="modal">
+				<div class="modal__container">
+					<div class="modal__header">
+						MODAL.JS
+					</div>
+					<div class="modal__body"></div>
+					<div class="modal__footer">
+						<button class="btn-close btn btn-danger">Close</button>
+					</div>
+				</div>
+				<div class="modal__background"></div>
+			</div>
+			<button class="btn_open">Open</button>
+		</div>
+		<div>
+			<pre id="logs"></pre>
+		</div>
+	</div>
+
+	<!-- JS -->
+	<script src="bundle.js"></script>
+	<script>
+		var modalEl = document.querySelector('.modal');
+		var triggerBtnEl = document.querySelector('.btn_open');
+		var logsEl = document.querySelector('#logs');
+
+		var modalBody = modalEl.querySelector('.modal__body');
+
+		/**
+		 * "mw" as modal window
+		 */
+		var mw = new Modal(modalEl, {
+			triggers: [
+				{
+					element: triggerBtnEl,
+					eventType: "click"
+				}
+			]
+		});
+
+		// mw.addTrigger(triggerBtnEl, 'click');
+
+		let logFunction = e => {
+			let now = new Date;
+			let date = `${now.getFullYear()}.${now.getMonth()}.${now.getDate()}`;
+			let time = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+			let p = document.createElement('p');
+			p.classList.add('log__item');
+			p.innerHTML = `[${date} ${time}] <b>${e.type}</b>`;
+
+			console.log(e);
+			logsEl.prepend(p);
+		};
+
+		mw.inited(logFunction);
+		mw.beforeOpen(logFunction);
+		mw.onOpen(logFunction);
+		mw.opened(function (e) {
+			logFunction(e);
+			modalBody.innerHTML = logsEl.innerHTML;
+		});
+		mw.beforeClose(function (e) {
+			logFunction(e);
+			modalBody.innerHTML = logsEl.innerHTML;
+		});
+		mw.onClose(logFunction);
+		mw.closed(logFunction);
+
+	</script>
+</body>
+</html>
