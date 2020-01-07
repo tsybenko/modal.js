@@ -19,6 +19,9 @@
     "url": "https://github.com/tsybenko/modal.js/issues"
   },
   "homepage": "https://github.com/tsybenko/modal.js#readme",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "devDependencies": {
     "@babel/core": "^7.7.7",
     "@babel/preset-env": "^7.7.7",
