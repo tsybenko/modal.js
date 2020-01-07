@@ -2,7 +2,7 @@
 
 [Demo](https://tsybenko.github.io/modal.js/)
 
-## Instalation and running
+## Installation and running
 
 First, clone library code and go inside it directory
 ```shell script
