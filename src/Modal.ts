@@ -5,11 +5,13 @@ import pluginsStore from "./plugins";
 import { ModalOptions } from "./interfaces/";
 import { defaults } from "./defaults";
 import { SYSTEM_DEFAULT_EVENT } from "./constants";
+import { Builder } from './ui/builder';
 
 const Modal = function(
 	el: HTMLElement,
 	options: ModalOptions = defaults
 ) {
+	let helpers = {};
 
 	const handlers = {
 		/**
@@ -207,6 +209,13 @@ const Modal = function(
 	/** Default trigger */
 	this.addTrigger(el.querySelector('.btn-close'), 'click');
 	this.addTrigger(el.querySelector('.modal__background'), 'click');
+
+	this.helpers = {
+		...helpers,
+		ui: {
+			builder: new Builder(el)
+		}
+	};
 
 };
 
