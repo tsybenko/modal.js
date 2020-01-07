@@ -1,6 +1,13 @@
 import { OptionsObject, Plugin } from "./interfaces/";
 
 export default (store) => ({
+
+	/**
+	 * Add plugin into store
+	 *
+	 * @param plugin
+	 * @returns {boolean}
+	 */
 	registerPlugin: (plugin: Plugin): boolean => {
 
 		if (! store.has(plugin.name)) {
@@ -11,6 +18,13 @@ export default (store) => ({
 
 		return false;
 	},
+
+	/**
+	 * Will call "methodName" inside of methods of plugins
+	 *
+	 * @param methodName {string}
+	 * @param options {Object}
+	 */
 	mapPluginsMethod: (methodName: string, options: OptionsObject) => {
 		if (store.size > 0) {
 			for (let plugin of store.values()) {
