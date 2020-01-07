@@ -43,10 +43,6 @@ const Modal = function(
 
 	const pluginsUtils = pluginsStore(plugins);
 
-	this.listPlugins = function(): string[] {
-		return Array.from(plugins.keys());
-	};
-
 	this.plug = pluginsUtils.registerPlugin;
 
 	/**
