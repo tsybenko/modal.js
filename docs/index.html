@@ -8,76 +8,119 @@
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<div style="display: flex; flex-direction: column;">
-		<div style="display: flex; justify-content: center;">
-			<div class="modal">
-				<div class="modal__container">
-					<div class="modal__header">
-						MODAL.JS
-					</div>
-					<div class="modal__body"></div>
-					<div class="modal__footer">
-						<button class="btn-close btn btn-danger">Close</button>
-					</div>
+<div style="display: flex; flex-direction: column;">
+	<div style="display: flex; justify-content: center;">
+		<div class="modal" role="dialog" tabindex="-1" aria-hidden="true" aria-labelledby="modal1__header">
+			<div class="modal__container" role="document">
+				<div class="modal__header" id="modal1__header">
+					Modal.js
 				</div>
-				<div class="modal__background"></div>
+				<div class="modal__body">
+					<p>Test</p>
+				</div>
+				<div class="modal__footer">
+					<button class="btn-close btn btn-danger" aria-label="Close" role="button">Close</button>
+				</div>
 			</div>
-			<button class="btn_open">Open</button>
+			<div class="modal__background"></div>
 		</div>
-		<div>
-			<pre id="logs"></pre>
-		</div>
+		<button class="btn_open" role="button" aria-label="Open" style="margin-bottom: 1em;">Open</button>
 	</div>
+	<div class="tab_content">
+		<pre class="tab_content__item" id="logs" style="display: block;"></pre>
+	</div>
+	<footer>
+		<p id="copyright" class="text-muted" style="text-align: center"><span>&copy;</span> 2019-2020, <a href="https://github.com/tsybenko/" rel="author" class="link__author">@tsybenko</a></span></p>
+	</footer>
+</div>
 
-	<!-- JS -->
-	<script src="bundle.js"></script>
-	<script>
-		var modalEl = document.querySelector('.modal');
-		var triggerBtnEl = document.querySelector('.btn_open');
-		var logsEl = document.querySelector('#logs');
+<!-- JS -->
+<script src="bundle.js"></script>
+<script>
+	function formatDate(date) {
+		let d = new Date(date),
+			month = '' + (d.getMonth() + 1),
+			day = '' + d.getDate(),
+			year = d.getFullYear();
 
-		var modalBody = modalEl.querySelector('.modal__body');
+		if (month.length < 2)
+			month = '0' + month;
+		if (day.length < 2)
+			day = '0' + day;
 
-		/**
-		 * "mw" as modal window
-		 */
-		var mw = new Modal(modalEl, {
-			triggers: [
-				{
-					element: triggerBtnEl,
-					eventType: "click"
-				}
-			]
-		});
+		return [year, month, day].join('-');
+	}
 
-		// mw.addTrigger(triggerBtnEl, 'click');
+	function formatTime(date) {
+		let d = new Date(date),
+			second = '' + d.getSeconds(),
+			minute = '' + d.getMinutes(),
+			hour = '' + d.getHours();
 
-		let logFunction = e => {
-			let now = new Date;
-			let date = `${now.getFullYear()}.${now.getMonth()}.${now.getDate()}`;
-			let time = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
-			let p = document.createElement('p');
-			p.classList.add('log__item');
-			p.innerHTML = `[${date} ${time}] <b>${e.type}</b>`;
+		if (hour.length < 2) {
+			hour = '0' + hour;
+		}
 
-			console.log(e);
-			logsEl.prepend(p);
-		};
+		if (minute.length < 2) {
+			minute = '0' + minute;
+		}
 
-		mw.inited(logFunction);
-		mw.beforeOpen(logFunction);
-		mw.onOpen(logFunction);
-		mw.opened(function (e) {
-			logFunction(e);
-			modalBody.innerHTML = logsEl.innerHTML;
-		});
-		mw.beforeClose(function (e) {
-			logFunction(e);
-			modalBody.innerHTML = logsEl.innerHTML;
-		});
-		mw.onClose(logFunction);
-		mw.closed(logFunction);
+		if (second.length < 2) {
+			second = '0' + second;
+		}
 
-	</script>
+		return [hour, minute, second].join(':');
+	}
+
+	var modalEl = document.querySelector('.modal');
+	var triggerBtnEl = document.querySelector('.btn_open');
+	var logsEl = document.querySelector('#logs');
+
+	var modalBody = modalEl.querySelector('.modal__body');
+
+	/**
+	 * "mw" as modal window
+	 */
+	var mw = new Modal(modalEl);
+
+	mw.addTrigger(triggerBtnEl, 'click');
+
+	let logFunction = function(e) {
+		let now = new Date;
+		let date = formatDate(now);
+		let time = formatTime(now);
+		let p = document.createElement('p');
+		p.classList.add('log__item');
+		p.title = `Event type "${e.type}" happen because of "${e.detail.type}"`;
+		p.innerHTML = `[${date} ${time}] <b>${e.type}</b>`;
+
+		console.log(e);
+		logsEl.prepend(p);
+	};
+
+	mw.beforeOpen(logFunction);
+	mw.onOpen(logFunction);
+	mw.opened(function (e) {
+		logFunction(e);
+		modalBody.innerHTML = logsEl.innerHTML;
+	});
+	mw.beforeClose(function(e) {
+		logFunction(e);
+		modalBody.innerHTML = logsEl.innerHTML;
+	});
+	mw.onClose(logFunction);
+	mw.closed(logFunction);
+
+	mw.open(function(modal, el, open) {
+		setTimeout(function () {
+			open();
+		}, 500);
+	}, function(modal, el, close) {
+		setTimeout(function () {
+			close();
+		}, 2000);
+	});
+
+</script>
 </body>
 </html>
