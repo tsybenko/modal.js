@@ -11,14 +11,14 @@ import pluginsStore from "./plugins";
 import { SystemEvent } from "./defaults/system-event";
 
 const defaults: ModalOptions = {
-	triggers: [],
+	triggers: new Map<HTMLElement, string>(),
 	plugins: new Map()
 };
 
 export class Modal {
 	readonly element: HTMLElement;
 	private plugins: {};
-	private triggers: Trigger[];
+	private triggers: Map<HTMLElement, string>;
 	private hooks;
 	private events;
 	private pluginsStore;
@@ -97,8 +97,8 @@ export class Modal {
 		 */
 		document.addEventListener('keyup', (event: KeyboardEvent) => escHandler.call(this, event));
 
-		if (this.triggers.length > 0) {
-			this.triggers.map(trigger => this.addTrigger(trigger.element, trigger.eventType));
+		if (this.triggers.size > 0) {
+			this.triggers.forEach((eventType, element) => this.addTrigger(element, eventType));
 		}
 
 		(this.addTrigger(this.element.querySelector('.btn-close'), 'click'));
@@ -241,10 +241,7 @@ export class Modal {
 	 * Toggle modal window
 	 */
 	toggleModal = (function(e): void {
-
-		this.isHidden() === true
-			? this.showModal(e)
-			: this.hideModal(e);
+		this.isHidden() === true ? this.showModal(e) : this.hideModal(e);
 	});
 
 	/**
@@ -262,9 +259,13 @@ export class Modal {
 	 * @returns {boolean}
 	 */
 	addTrigger(el: HTMLElement, eventName: string): boolean {
-		this.triggers.push({ element: el, eventType: eventName });
-		el.addEventListener(eventName, this.handleTrigger);
-		return true;
+		if (! this.triggers.has(el)) {
+			this.triggers.set(el, eventName);
+			el.addEventListener(eventName, this.handleTrigger);
+			return true;
+		}
+
+		return false;
 	}
 
 	// /**
