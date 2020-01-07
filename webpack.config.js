@@ -2,6 +2,8 @@ const path = require('path');
 const MODE_PROD = 'production';
 const MODE_DEV = 'development';
 
+const devServer = require('./devserver.config');
+
 module.exports = (env) => {
 	let mode = env.production === 'true'
 		? MODE_PROD
@@ -16,8 +18,9 @@ module.exports = (env) => {
 		},
 		mode,
 		resolve: {
-			extensions: [ '.tsx', '.ts', '.js' ],
+			extensions: [ '.ts', '.js' ],
 		},
+		devServer,
 		module: {
 			rules: [
 				{

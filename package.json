@@ -4,6 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "start:dev": "webpack-dev-server --env.production=false",
+    "start:prod": "webpack-dev-server --env.production=true",
     "build-dev": "webpack --env.production=false",
     "watch-dev": "webpack --env.production=false --watch",
     "build-prod": "webpack --env.production=true",
@@ -32,6 +34,7 @@
     "typescript": "^3.7.4",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "webpack": "^4.41.4",
-    "webpack-cli": "^3.3.10"
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.1"
   }
 }
