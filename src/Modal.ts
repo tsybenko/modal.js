@@ -11,7 +11,7 @@ const Modal = function(
 	el: HTMLElement,
 	options: ModalOptions = defaults
 ) {
-	let helpers = {};
+	let extensions = {};
 
 	const handlers = {
 		/**
@@ -210,11 +210,9 @@ const Modal = function(
 	this.addTrigger(el.querySelector('.btn-close'), 'click');
 	this.addTrigger(el.querySelector('.modal__background'), 'click');
 
-	this.helpers = {
-		...helpers,
-		ui: {
-			builder: new Builder(el)
-		}
+	this.extensions = {
+		...extensions,
+		UIBuilder:  new Builder(el)
 	};
 
 };
