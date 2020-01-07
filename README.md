@@ -2,6 +2,25 @@
 
 [Demo](https://tsybenko.github.io/modal.js/)
 
+## Instalation and running
+
+First, clone library code and go inside it directory
+```shell script
+git clone https://github.com/tsybenko/modal.js.git
+cd modal.js
+```
+
+Second, load library dependencies
+```shell script
+npm update
+```
+
+Third, run webpack development server.
+Server will running on **http://127.0.0.1:4000**
+```shell script
+npm run start:dev
+```
+
 ## Usage example
 
 **HTML**
