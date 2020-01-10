@@ -2,6 +2,11 @@
 
 [Demo](https://tsybenko.github.io/modal.js/)
 
+## Documentation
+
+* [GitHub Wiki](https://github.com/tsybenko/modal.js/wiki)
+
+
 ## Installation and running
 
 First, clone library code and go inside it directory
