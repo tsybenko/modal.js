@@ -13,7 +13,7 @@ export default (element: Element): object => ({
 	 *
 	 * @param handler {Function}
 	 */
-	[BEFORE_OPEN]: (handler: (arg0: any) => void) => element.addEventListener(BEFORE_OPEN, event => handler(event)),
+	[BEFORE_OPEN]: handler => element.addEventListener(BEFORE_OPEN, event => handler(event)),
 
 	/**
 	 * Will call handler "handler" right in moment before modal window will be opened
