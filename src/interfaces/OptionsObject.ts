@@ -1,4 +1,4 @@
 export interface OptionsObject {
-	event: CustomEvent | Event,
-	element: Element
+  event: CustomEvent | Event,
+  element: Element
 }

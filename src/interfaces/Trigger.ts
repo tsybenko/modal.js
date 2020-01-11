@@ -1,4 +1,4 @@
 export interface Trigger {
-	element: HTMLElement,
-	eventType: string
+  element: HTMLElement,
+  eventType: string
 }

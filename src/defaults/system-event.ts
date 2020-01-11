@@ -1,3 +1,3 @@
 export const SystemEvent = {
-	type: "System"
+  type: "System"
 };

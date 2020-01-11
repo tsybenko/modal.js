@@ -1,4 +1,4 @@
 export interface Plugin {
-	name: string,
-	methods: object
+  name: string,
+  methods: object
 }
