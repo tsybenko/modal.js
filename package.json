@@ -4,12 +4,14 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start:dev": "webpack-dev-server --env.production=false",
-    "start:prod": "webpack-dev-server --env.production=true",
-    "build-dev": "webpack --env.production=false",
-    "watch-dev": "webpack --env.production=false --watch",
-    "build-prod": "webpack --env.production=true",
-    "watch-prod": "webpack --env.production=true --watch"
+    "demo": "webpack serve --env APP_ENV=production --config demo/webpack.config.js",
+    "build:demo": "webpack build --env APP_ENV=production --config demo/webpack.config.js",
+    "start:dev": "webpack serve --env APP_ENV=development",
+    "start:prod": "webpack-dev-server --env APP_ENV=production",
+    "build-dev": "webpack --env APP_ENV=development",
+    "watch-dev": "webpack --env APP_ENV=development --watch",
+    "build-prod": "webpack --env APP_ENV=production",
+    "watch-prod": "webpack --env APP_ENV=production --watch"
   },
   "repository": {
     "type": "git",
@@ -25,16 +27,17 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "devDependencies": {
-    "@babel/core": "^7.7.7",
-    "@babel/preset-env": "^7.7.7",
-    "@babel/preset-typescript": "^7.7.7",
-    "babel-loader": "^8.0.6",
-    "jest": "^24.9.0",
-    "ts-loader": "^6.2.1",
-    "typescript": "^3.7.4",
-    "uglifyjs-webpack-plugin": "^2.2.0",
-    "webpack": "^4.41.4",
-    "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.10.1"
+    "@babel/core": "^7.29.7",
+    "@babel/preset-env": "^7.29.7",
+    "@babel/preset-typescript": "^7.29.7",
+    "babel-loader": "^10.1.1",
+    "css-loader": "^7.1.4",
+    "html-webpack-plugin": "^5.6.7",
+    "style-loader": "^4.0.0",
+    "ts-loader": "^9.6.1",
+    "typescript": "^6.0.3",
+    "webpack": "^5.107.2",
+    "webpack-cli": "^7.0.3",
+    "webpack-dev-server": "^5.2.5"
   }
 }
