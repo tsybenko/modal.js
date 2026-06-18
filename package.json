@@ -5,12 +5,7 @@
   "scripts": {
     "demo": "webpack serve --env APP_ENV=production --config demo/webpack.config.js",
     "build:demo": "webpack build --env APP_ENV=production --config demo/webpack.config.js",
-    "start:dev": "webpack serve --env APP_ENV=development",
-    "start:prod": "webpack-dev-server --env APP_ENV=production",
-    "build-dev": "webpack --env APP_ENV=development",
-    "watch-dev": "webpack --env APP_ENV=development --watch",
-    "build-prod": "webpack --env APP_ENV=production",
-    "watch-prod": "webpack --env APP_ENV=production --watch"
+    "build": "webpack build"
   },
   "repository": {
     "type": "git",
