@@ -1,1 +1,1 @@
-export declare type LibraryEvent = { [p: string]: (data) => CustomEvent };
+export declare type LibraryEvent = { [p: string]: (data: any) => CustomEvent };

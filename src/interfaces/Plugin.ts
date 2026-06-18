@@ -1,4 +1,4 @@
 export interface Plugin {
   name: string,
-  methods: object
+  methods: Record<string, (event: Event, element: HTMLElement) => void>
 }

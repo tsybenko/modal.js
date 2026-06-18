@@ -1,15 +1,16 @@
-import * as utils from './utils';
-import getHooks from './hooks';
-import getEvents from './events';
+import * as utils from "./utils";
+import getHooks from "./hooks";
+import getEvents from "./events";
 import pluginsStore from "./plugins";
-import { ModalOptions } from "./interfaces/";
+import { ModalOptions, Plugin } from "./interfaces/";
 import { defaults } from "./defaults";
 import { SYSTEM_DEFAULT_EVENT } from "./constants";
-import { Builder } from './ui/builder';
+import { Builder } from "./ui/builder";
 
 const Modal = function (
-    el: HTMLElement,
-    options: ModalOptions = defaults
+  this: any,
+  el: HTMLElement,
+  options: ModalOptions = defaults,
 ) {
   let extensions = {};
 
@@ -17,31 +18,32 @@ const Modal = function (
     /**
      * Handler of modal window opening, contains the logic of how it should be
      */
-    open: options.hasOwnProperty('handlers') && options.handlers.hasOwnProperty('open')
-        ? options.handlers.open(this, el)
-        : defaults.handlers.open(this, el),
+    open: options.handlers?.open
+      ? options.handlers.open(this, el)
+      : defaults.handlers!.open!(this, el),
 
     /**
      * Handler of modal window closing, contains the logic of how it should be
      */
-    close: options.hasOwnProperty('handlers') && options.handlers.hasOwnProperty('close')
-        ? options.handlers.close(this, el)
-        : defaults.handlers.close(this, el)
+    close: options.handlers?.close
+      ? options.handlers.close(this, el)
+      : defaults.handlers!.close!(this, el),
   };
 
   /**
    * Triggers
    */
-  const triggers = (options.hasOwnProperty('triggers') && options.triggers.size > 0)
+  const triggers: Map<HTMLElement, string> =
+    options.triggers && options.triggers.size > 0
       ? options.triggers
-      : defaults.triggers;
+      : (defaults.triggers ?? new Map());
 
   /**
    * Store of plugins
    *
    * @type {Map<string, object>}
    */
-  let plugins: Map<string, object> = new Map();
+  let plugins: Map<string, Plugin> = new Map();
 
   const pluginsUtils = pluginsStore(plugins);
 
@@ -66,29 +68,32 @@ const Modal = function (
   /**
    * Listener of "Escape" keyboard button
    */
-  document.addEventListener('keyup', (event: KeyboardEvent) => ((e: KeyboardEvent): void => {
-    if (e.key === "Escape") {
-      if (this.isOpen(this, el)) {
-        toggleModal(e);
+  document.addEventListener("keyup", (event: KeyboardEvent) =>
+    ((e: KeyboardEvent): void => {
+      if (e.key === "Escape") {
+        if (this.isOpen(this, el)) {
+          toggleModal(e);
+        }
       }
-    }
-  }).call(this, event));
+    }).call(this, event),
+  );
 
   /**
    * Check is modal shows
    *
    * @returns {boolean}
    */
-  this.isOpen = (options.hasOwnProperty('handlers') && options.handlers.hasOwnProperty('isOpen'))
-      ? options.handlers.isOpen(this, el)
-      : defaults.handlers.isOpen(this, el);
+  this.isOpen = options.handlers?.isOpen
+    ? options.handlers.isOpen(this, el)
+    : defaults.handlers!.isOpen!(this, el);
 
   /**
    * Check is modal hidden
    *
    * @returns {boolean}
    */
-  this.isClose = (instance, element): boolean => !this.isOpen(instance, element);
+  this.isClose = (instance: any, element: HTMLElement): boolean =>
+    !this.isOpen(instance, element);
 
   /**
    * Show modal window
@@ -99,7 +104,7 @@ const Modal = function (
 
       if (el.dispatchEvent(events.onOpen(event))) {
         handlers.open();
-        pluginsUtils.mapPluginsMethod('showModal', {event, element: el});
+        pluginsUtils.mapPluginsMethod("showModal", { event, element: el });
         el.dispatchEvent(events.opened(event));
       }
     }
@@ -114,7 +119,7 @@ const Modal = function (
 
       if (el.dispatchEvent(events.onClose(event))) {
         handlers.close();
-        pluginsUtils.mapPluginsMethod('hideModal', {event, element: el});
+        pluginsUtils.mapPluginsMethod("hideModal", { event, element: el });
         el.dispatchEvent(events.closed(event));
       }
     }
@@ -127,8 +132,16 @@ const Modal = function (
    * @param after {function} - callback, will be called after modal window was opened
    */
   this.open = (
-      before: (instance: object, element: HTMLElement, openFn: Function) => void | null,
-      after: (instance: object, element: HTMLElement, closeFn: Function) => void | null
+    before: (
+      instance: object,
+      element: HTMLElement,
+      openFn: Function,
+    ) => void | null,
+    after: (
+      instance: object,
+      element: HTMLElement,
+      closeFn: Function,
+    ) => void | null,
   ) => {
     if (utils.isFunc(before)) {
       before(this, el, this.showModal);
@@ -148,8 +161,16 @@ const Modal = function (
    * @param after {function} - callback, will be called after modal window was closed
    */
   this.close = (
-      before: (instance: object, element: HTMLElement, closeFn: Function) => void | null,
-      after: (instance: object, element: HTMLElement, openFn: Function) => void | null
+    before: (
+      instance: object,
+      element: HTMLElement,
+      closeFn: Function,
+    ) => void | null,
+    after: (
+      instance: object,
+      element: HTMLElement,
+      openFn: Function,
+    ) => void | null,
   ) => {
     if (utils.isFunc(before)) {
       before(this, el, this.hideModal);
@@ -166,9 +187,7 @@ const Modal = function (
    * Toggle modal window
    */
   const toggleModal = (e: Event | CustomEvent | KeyboardEvent): void => {
-    this.isClose(this, el) === true
-        ? this.showModal(e)
-        : this.hideModal(e);
+    this.isClose(this, el) === true ? this.showModal(e) : this.hideModal(e);
   };
 
   this.toggle = (e: Event | CustomEvent | KeyboardEvent): void => {
@@ -183,9 +202,9 @@ const Modal = function (
   /**
    * Handler that will be assigned to a trigger
    */
-  const handleTrigger = (function (e) {
+  const handleTrigger = (e: Event) => {
     toggleModal(e);
-  }).bind(this);
+  };
 
   /**
    * Sets HTMLDOMElement "el" with event type of eventName as a trigger of toggle method
@@ -207,14 +226,15 @@ const Modal = function (
   triggers.forEach((eventType, element) => this.addTrigger(element, eventType));
 
   /** Default trigger */
-  this.addTrigger(el.querySelector('.btn-close'), 'click');
-  this.addTrigger(el.querySelector('.modal__background'), 'click');
+  const btnClose = el.querySelector<HTMLElement>("[data-modaljs-close-button]");
+  const bgElement = el.querySelector<HTMLElement>(".modal__background");
+  if (btnClose) this.addTrigger(btnClose, "click");
+  if (bgElement) this.addTrigger(bgElement, "click");
 
   this.extensions = {
     ...extensions,
-    UIBuilder: new Builder(el)
+    UIBuilder: new Builder(el),
   };
-
 };
 
 export { Modal };

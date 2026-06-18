@@ -3,7 +3,7 @@ export const isFunc = (v: any): boolean =>
 export const isPromise = (v: any): boolean =>
     typeof v === 'object' && v.__proto__.hasOwnProperty('then');
 
-export const mapProps = (target: object, reference: object) => {
+export const mapProps = (target: Record<string, any>, reference: Record<string, any>) => {
   for (let prop in reference) {
     if (!target.hasOwnProperty(prop)) {
       target[prop] = reference[prop];

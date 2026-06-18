@@ -8,50 +8,51 @@ interface UIStructure {
   footer: HTMLDivElement
 }
 
-const Builder = function (
+class Builder {
+  private rootElement: HTMLElement;
+  private options: UIBuilderOptions;
+
+  constructor(
     rootElement: HTMLElement,
     options: UIBuilderOptions = defaults
-) {
-  mapProps(options, defaults);
+  ) {
+    this.rootElement = rootElement;
+    this.options = { ...options };
+    mapProps(this.options as Record<string, any>, defaults as Record<string, any>);
+  }
 
-  const createHeader = (): HTMLDivElement => {
+  private createHeader(): HTMLDivElement {
     const node = document.createElement('div');
-    node.classList.add(options.classLists.header);
-
+    node.classList.add(this.options.classLists?.header ?? '');
     return node;
-  };
+  }
 
-  const createBody = (): HTMLDivElement => {
+  private createBody(): HTMLDivElement {
     const node = document.createElement('div');
-    node.classList.add(options.classLists.body);
-
+    node.classList.add(this.options.classLists?.body ?? '');
     return node;
-  };
+  }
 
-  const createFooter = () => {
-    let node = document.createElement('div');
-    node.classList.add(options.classLists.footer);
-
+  private createFooter(): HTMLDivElement {
+    const node = document.createElement('div');
+    node.classList.add(this.options.classLists?.footer ?? '');
     return node;
-  };
+  }
 
-  const build = (): UIStructure => {
+  private build(): UIStructure {
     return {
-      header: createHeader(),
-      body: createBody(),
-      footer: createFooter()
+      header: this.createHeader(),
+      body: this.createBody(),
+      footer: this.createFooter()
     };
-  };
+  }
 
-  const mount = () => {
-    const nodes: UIStructure = build();
-
-    rootElement.appendChild(nodes.header);
-    rootElement.appendChild(nodes.body);
-    rootElement.appendChild(nodes.footer);
-  };
-
-  this.mount = mount;
-};
+  mount(): void {
+    const nodes: UIStructure = this.build();
+    this.rootElement.appendChild(nodes.header);
+    this.rootElement.appendChild(nodes.body);
+    this.rootElement.appendChild(nodes.footer);
+  }
+}
 
 export { Builder };

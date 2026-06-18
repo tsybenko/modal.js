@@ -1,6 +1,8 @@
+import { Plugin } from './Plugin';
+
 export interface ModalOptions {
   triggers?: Map<HTMLElement, string>,
-  plugins?: Map<string, object>,
+  plugins?: Map<string, Plugin>,
   handlers?: {
     open?: (instance: object, element: HTMLElement) => (() => void),
     close?: (instance: object, element: HTMLElement) => (() => void),

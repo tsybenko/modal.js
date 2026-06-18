@@ -1,6 +1,7 @@
 import {
   Trigger,
-  ModalOptions
+  ModalOptions,
+  Plugin
 } from "./interfaces/";
 
 import { isFunc } from './utils';
@@ -17,92 +18,80 @@ const defaults: ModalOptions = {
 
 export class Modal {
   readonly element: HTMLElement;
-  private plugins: {};
+  private plugins: Map<string, Plugin>;
   private triggers: Map<HTMLElement, string>;
-  private hooks;
-  private events;
-  private pluginsStore;
+  private hooks: Record<string, (handler: Function) => void>;
+  private events: Record<string, (data?: any) => CustomEvent>;
+  private pluginsStore: ReturnType<typeof pluginsStore>;
   private plug: Function;
 
   private openHandler: Function;
   private closeHandler: Function;
 
-  public beforeOpen;
-  public onOpen;
-  public opened;
-  public beforeClose;
-  public onClose;
-  public closed;
+  public beforeOpen!: (handler: Function) => void;
+  public onOpen!: (handler: Function) => void;
+  public opened!: (handler: Function) => void;
+  public beforeClose!: (handler: Function) => void;
+  public onClose!: (handler: Function) => void;
+  public closed!: (handler: Function) => void;
 
   constructor(
       element: HTMLElement,
       options: ModalOptions = defaults
   ) {
     this.element = element;
-    this.plugins = options.plugins;
-    this.triggers = options.triggers;
-    this.hooks = getHooks(this.element);
-    this.events = getEvents();
+    this.plugins = options.plugins ?? new Map();
+    this.triggers = options.triggers ?? new Map();
+    this.hooks = getHooks(this.element) as Record<string, (handler: Function) => void>;
+    this.events = getEvents() as Record<string, (data?: any) => CustomEvent>;
     this.pluginsStore = pluginsStore(this.plugins);
     this.plug = this.pluginsStore.registerPlugin;
 
-    this.openHandler = (function () {
+    this.openHandler = () => {
       this.element.style.visibility = 'visible';
 
       if (!this.element.classList.contains('opened')) {
         this.element.classList.add('opened');
       }
-    }).bind(this);
+    };
 
-    this.closeHandler = (function () {
+    this.closeHandler = () => {
       this.element.style.visibility = 'hidden';
 
       if (this.element.classList.contains('opened')) {
         this.element.classList.remove('opened');
       }
-    }).bind(this);
+    };
 
     for (let [name, handler] of Object.entries(this.hooks)) {
-      this[name] = handler;
+      (this as any)[name] = handler;
     }
-
-    /**
-     * Opening hooks
-     */
-    // this.beforeOpen = this.hooks.beforeOpen;
-    // this.onOpen = this.hooks.onOpen;
-    // this.opened = this.hooks.opened;
-
-    /**
-     * Closing hooks
-     */
-    // this.beforeClose = this.hooks.beforeClose;
-    // this.onClose = this.hooks.onClose;
-    // this.closed = this.hooks.closed;
 
     /**
      * Handler of "Escape" keyboard button
      * @param e {KeyboardEvent}
      */
-    let escHandler = (function (e: KeyboardEvent) {
+    const escHandler = (e: KeyboardEvent): void => {
       if (e.key === "Escape") {
         if (this.isShow()) {
           this.toggleModal(e);
         }
       }
-    }).bind(this);
+    };
 
     /**
      * Listener of "Escape" keyboard button
      */
-    document.addEventListener('keyup', (event: KeyboardEvent) => escHandler.call(this, event));
+    document.addEventListener('keyup', (event: KeyboardEvent) => escHandler(event));
 
     if (this.triggers.size > 0) {
       this.triggers.forEach((eventType, element) => this.addTrigger(element, eventType));
     }
 
-    (this.addTrigger(this.element.querySelector('.btn-close'), 'click'));
-    (this.addTrigger(this.element.querySelector('.modal__background'), 'click'));
+    const btnClose = this.element.querySelector<HTMLElement>('.btn-close');
+    const bgElement = this.element.querySelector<HTMLElement>('.modal__background');
+    if (btnClose) this.addTrigger(btnClose, 'click');
+    if (bgElement) this.addTrigger(bgElement, 'click');
 
     this.closeHandler();
   }
@@ -122,34 +111,10 @@ export class Modal {
    */
   isShow = (): boolean => !this.isHidden();
 
-  // /**
-  //  * Handler of modal window opening, contains the logic of how it should be
-  //  */
-  // private openHandler() {
-  // 	this.element.style.visibility = 'visible';
-  //
-  // 	if (!this.element.classList.contains('opened')) {
-  // 		this.element.classList.add('opened');
-  // 	}
-  // }
-
-  // /**
-  //  * Handler of modal window closing, contains the logic of how it should be
-  //  */
-  // private closeHandler() {
-  // 	this.element.style.visibility = 'hidden';
-  //
-  // 	if (this.element.classList.contains('opened')) {
-  // 		this.element.classList.remove('opened');
-  // 	}
-  // }
-
   /**
    * Show modal window
    */
   showModal = ((event = SystemEvent) => {
-
-    // console.log('showModal', event);
 
     if (this.isHidden()) {
       this.element.dispatchEvent(this.events.beforeOpen(event));
@@ -157,8 +122,6 @@ export class Modal {
       if (this.element.dispatchEvent(this.events.onOpen(event))) {
 
         this.openHandler();
-
-        // this.pluginsStore.mapPluginsMethod('showModal', { event, element: this.element });
 
         this.element.dispatchEvent(this.events.opened(event));
       }
@@ -168,8 +131,6 @@ export class Modal {
 
   hideModal = ((event = SystemEvent) => {
 
-    // console.log('hideModal', event);
-
     if (!this.isHidden()) {
 
       this.element.dispatchEvent(this.events.beforeClose(event));
@@ -177,8 +138,6 @@ export class Modal {
       if (this.element.dispatchEvent(this.events.onClose(event))) {
 
         this.closeHandler();
-
-        // this.pluginsStore.mapPluginsMethod('hideModal', { event, element: this.element });
 
         this.element.dispatchEvent(this.events.closed(event));
       }
@@ -201,14 +160,14 @@ export class Modal {
 
       this.element.dispatchEvent(this.events.beforeOpen());
 
-      if (typeof before !== null && isFunc(before)) {
+      if (before !== null && isFunc(before)) {
         before(this, this.element, this.showModal);
       } else {
         this.showModal();
       }
 
 
-      if (typeof after !== null && isFunc(after)) {
+      if (after !== null && isFunc(after)) {
         after(this, this.element, this.hideModal);
       }
     }
@@ -226,13 +185,13 @@ export class Modal {
       after: Function | null = null
   ): void {
 
-    if (typeof before !== null && isFunc(before)) {
+    if (before !== null && isFunc(before)) {
       before(this, this.element, this.hideModal);
     } else {
       this.hideModal();
     }
 
-    if (typeof after !== null && isFunc(after)) {
+    if (after !== null && isFunc(after)) {
       after(this, this.element, this.showModal);
     }
   }
@@ -240,16 +199,16 @@ export class Modal {
   /**
    * Toggle modal window
    */
-  toggleModal = (function (e): void {
+  toggleModal = (e: Event): void => {
     this.isHidden() === true ? this.showModal(e) : this.hideModal(e);
-  });
+  };
 
   /**
    * Handler that will be assigned to a trigger
    */
-  handleTrigger = (function (e) {
+  handleTrigger = (e: Event): void => {
     this.toggleModal(e);
-  }).bind(this);
+  };
 
   /**
    * Sets HTMLDOMElement "el" with event type of eventName as a trigger of toggle method
@@ -267,13 +226,5 @@ export class Modal {
 
     return false;
   }
-
-  // /**
-  //  * Add plugin into store
-  //  *
-  //  * @param plugin
-  //  */
-  // plug = this.pluginsStore.registerPlugin;
-
 
 }

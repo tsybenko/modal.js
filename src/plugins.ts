@@ -1,6 +1,6 @@
 import { OptionsObject, Plugin } from "./interfaces/";
 
-export default (store) => ({
+export default (store: Map<string, Plugin>) => ({
 
   /**
    * Add plugin into store
