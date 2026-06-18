@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
     "demo": "webpack serve --env APP_ENV=production --config demo/webpack.config.js",
     "build:demo": "webpack build --env APP_ENV=production --config demo/webpack.config.js",
     "start:dev": "webpack serve --env APP_ENV=development",
